@@ -1,0 +1,46 @@
+$line-height: 16px;
+$line-size: 2px;
+
+.line {
+  position: absolute;
+
+  height: $line-height;
+  width: $line-size;
+
+  background-color: #c4c4c4;
+  left: 50%;
+
+  z-index: 1;
+
+  &--top {
+    top: -$line-height;
+  }
+
+  &--central {
+    width: 100%;
+    top: -$line-height;
+    transform: translateX(-50%);
+    height: $line-size;
+  }
+
+  &--bottom {
+    bottom: -$line-height;
+  }
+
+  &--transparent {
+    top: -$line-height;
+    width: 50%;
+    background-color: white;
+    transform: translateX(0);
+
+    &-left {
+      left: -$line-size;
+      width: calc(50% + 2px);
+    }
+
+    &-right {
+      left: unset;
+      right: -$line-size;
+    }
+  }
+}

@@ -1,0 +1,39 @@
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border: none;
+
+  cursor: pointer;
+
+  &--icon {
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+
+    max-width: 1.5rem;
+    max-height: 1.5rem;
+
+    border-radius: 50%;
+  }
+
+  &--success {
+    background-color: rgb(128, 233, 128);
+  }
+
+  &--greyed {
+    background-color: rgb(226, 225, 225);
+  }
+
+  &--info {
+    background-color: rgb(137, 212, 255);
+  }
+
+  &--error {
+    background-color: rgb(253, 189, 189);
+  }
+
+  & img {
+    width: 75%;
+  }
+}
