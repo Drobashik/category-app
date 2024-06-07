@@ -15,7 +15,13 @@ export const Container = () => {
         onMouseUp={handleStopMove}
         onMouseMove={handleMoving}
       >
-        <CategoryContainer onMouseDown={handleStartMove} style={postition} />
+        <div
+          className="category-draggable"
+          onMouseDown={handleStartMove}
+          style={postition}
+        >
+          <CategoryContainer />
+        </div>
       </div>
     </div>
   );

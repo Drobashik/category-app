@@ -1,8 +1,8 @@
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useRef, useState } from "react";
 import { CENTRAL_POSITION } from "../constants";
 
 export const useMouseMove = () => {
-  const [isReadyMove, setReadyMove] = useState(false);
+  const isReadyMoveRef = useRef(false);
 
   const [parallelPos, setParallelPos] = useState({ x: 0, y: 0 });
 
@@ -31,11 +31,11 @@ export const useMouseMove = () => {
         -1,
     });
 
-    setReadyMove(true);
+    isReadyMoveRef.current = true;
   };
 
   const handleMoving = ({ currentTarget, clientX, clientY }: MouseEvent) => {
-    if (!isReadyMove) return;
+    if (!isReadyMoveRef.current) return;
 
     const targeted = (currentTarget as HTMLDivElement)
       .firstElementChild as HTMLDivElement;
@@ -49,7 +49,7 @@ export const useMouseMove = () => {
   };
 
   const handleStopMove = () => {
-    setReadyMove(false);
+    isReadyMoveRef.current = false;
   };
 
   return {
