@@ -52,16 +52,26 @@
 
     gap: 1rem;
   }
+
+  &_container {
+    position: absolute;
+
+    transform: translate(-50%, -50%);
+    padding: 2rem;
+
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
 }
 
-.category-container {
-  position: absolute;
+.category-field {
+  position: relative;
 
-  transform: translate(-50%, -50%);
+  background-color: white;
 
-  cursor: grab;
-
-  &:active {
-    cursor: grabbing;
-  }
+  width: 100%;
+  min-height: 100vh;
 }
