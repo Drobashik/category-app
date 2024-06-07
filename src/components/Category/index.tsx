@@ -1,12 +1,18 @@
 import { FunctionComponent, useMemo } from "react";
 import { Line } from "../Line";
 
+import {
+  ConfirmSVG,
+  CrossSVG,
+  EditSVG,
+  PlusSVG,
+} from "../shared/SvgIcon/Icons";
 import { Button } from "../shared/Button";
 import { InputText } from "../shared/InputText";
 
-import { LIGHT_GREY_COLOR } from "../../constants";
+import { WHITE_COLOR } from "../../constants";
 
-import { getRandomColor } from "../../helpers";
+import { getReadableLightColor } from "../../helpers";
 import { CategoryType } from "../../types/Category.type";
 import { useHandleCategory } from "../../hooks/useHandleCategory";
 import { useInputText } from "../../hooks/useInputText";
@@ -15,30 +21,37 @@ type Props = {
   category: CategoryType;
   onCategoryChange: (action: () => void) => void;
   isInner?: boolean;
-  innerCategories?: CategoryType[];
-  categoryIndex?: number;
   boxColor?: string;
+  categoryIndex?: number;
+  innerCategories?: CategoryType[];
 };
 
 export const Category: FunctionComponent<Props> = ({
-  category: { value, subCategories, id, editable },
+  category: { value, subCategories, id, editable, new: isNew },
   onCategoryChange,
   isInner = false,
-  innerCategories = [],
+  boxColor = WHITE_COLOR,
   categoryIndex = 0,
-  boxColor = LIGHT_GREY_COLOR,
+  innerCategories = [],
 }) => {
   const { editedValue, handleInputChange } = useInputText(value);
 
   const generatedColor = useMemo(() => {
-    return getRandomColor();
+    return getReadableLightColor();
   }, []);
 
-  const { handleAdd, handleConfirm, handleEdit, handleRemove } =
+  const { handleAdd, handleCancel, handleConfirm, handleEdit, handleRemove } =
     useHandleCategory(id, onCategoryChange);
 
-  const handleEditingConfirm = () => {
+  const handleNewValue = () => {
     handleConfirm(editedValue);
+  };
+
+  const handleResetCancel = () => {
+    handleCancel();
+
+    console.log(value);
+    handleInputChange(value);
   };
 
   return (
@@ -82,36 +95,33 @@ export const Category: FunctionComponent<Props> = ({
         </div>
 
         {editable ? (
-          <Button
-            buttonType="icon"
-            variant="success"
-            onClick={handleEditingConfirm}
-          >
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/1/1687.png"
-              alt="Confirm"
-            />
-          </Button>
+          <>
+            <Button
+              buttonType="icon"
+              variant="success"
+              onClick={handleNewValue}
+            >
+              <ConfirmSVG />
+            </Button>
+            <Button
+              buttonType="icon"
+              variant="error"
+              onClick={isNew ? handleRemove : handleResetCancel}
+            >
+              <CrossSVG />
+            </Button>
+          </>
         ) : (
           <>
             <Button buttonType="icon" variant="greyed" onClick={handleAdd}>
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/32/32563.png"
-                alt="Plus"
-              />
+              <PlusSVG />
             </Button>
             <Button buttonType="icon" variant="info" onClick={handleEdit}>
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/1828/1828911.png"
-                alt="Edit"
-              />
+              <EditSVG />
             </Button>
             {isInner && (
               <Button buttonType="icon" variant="error" onClick={handleRemove}>
-                <img
-                  src="https://cdn-icons-png.flaticon.com/512/63/63694.png"
-                  alt="Remove"
-                />
+                <CrossSVG />
               </Button>
             )}
           </>

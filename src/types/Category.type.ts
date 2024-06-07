@@ -3,4 +3,5 @@ export type CategoryType = {
   id: number;
   subCategories: CategoryType[];
   editable: boolean;
+  new: boolean;
 };
