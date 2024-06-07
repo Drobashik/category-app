@@ -1,6 +1,5 @@
 import { FunctionComponent, HTMLAttributes, useState } from "react";
 import { Category } from ".";
-import { HandlerCategory } from "../../lib/HandlerCategory";
 import { categoryData } from "../../__mocks__/catrgoryData";
 import classNames from "classnames";
 
@@ -14,18 +13,12 @@ export const CategoryContainer: FunctionComponent<Props> = ({
 
   const handleCategoryChange = (action: () => void) => {
     action();
-    setCategory({ ...category });
+    setCategory({ ...categoryData });
   };
-
-  const handleCategory = new HandlerCategory(category);
 
   return (
     <div className={classNames("category-container", className)} {...props}>
-      <Category
-        category={category}
-        handlerCategory={handleCategory}
-        onCategoryChange={handleCategoryChange}
-      />
+      <Category category={category} onCategoryChange={handleCategoryChange} />
     </div>
   );
 };

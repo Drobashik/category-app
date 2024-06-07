@@ -1,4 +1,4 @@
-import { FunctionComponent, useMemo, useState } from "react";
+import { FunctionComponent, useMemo } from "react";
 import { Line } from "../Line";
 
 import { Button } from "../shared/Button";
@@ -6,14 +6,13 @@ import { InputText } from "../shared/InputText";
 
 import { LIGHT_GREY_COLOR } from "../../constants";
 
-import { HandlerCategory } from "../../lib/HandlerCategory";
 import { getRandomColor } from "../../helpers";
 import { CategoryType } from "../../types/Category.type";
 import { useHandleCategory } from "../../hooks/useHandleCategory";
+import { useInputText } from "../../hooks/useInputText";
 
 type Props = {
   category: CategoryType;
-  handlerCategory: HandlerCategory;
   onCategoryChange: (action: () => void) => void;
   isInner?: boolean;
   innerCategories?: CategoryType[];
@@ -23,39 +22,24 @@ type Props = {
 
 export const Category: FunctionComponent<Props> = ({
   category: { value, subCategories, id, editable },
-  handlerCategory,
   onCategoryChange,
   isInner = false,
   innerCategories = [],
   categoryIndex = 0,
   boxColor = LIGHT_GREY_COLOR,
 }) => {
-  const [categoryValue, setCategoryValue] = useState(value);
-
-  const { handleAdd, handleConfirm, handleEdit, handleRemove } =
-    useHandleCategory(id, handlerCategory, onCategoryChange);
-
-  const addCategory = () => {
-    handleAdd({
-      value: "",
-      editable: true,
-      id: Date.now(),
-      subCategories: [],
-    });
-  };
-
-  const confirmCategory = () => {
-    handleConfirm({
-      id,
-      subCategories,
-      editable: false,
-      value: categoryValue,
-    });
-  };
+  const { editedValue, handleInputChange } = useInputText(value);
 
   const generatedColor = useMemo(() => {
     return getRandomColor();
   }, []);
+
+  const { handleAdd, handleConfirm, handleEdit, handleRemove } =
+    useHandleCategory(id, onCategoryChange);
+
+  const handleEditingConfirm = () => {
+    handleConfirm(editedValue);
+  };
 
   return (
     <div className="category">
@@ -86,17 +70,23 @@ export const Category: FunctionComponent<Props> = ({
           style={{ background: editable ? "white" : boxColor }}
         >
           {editable ? (
-            <InputText
-              value={categoryValue}
-              onChange={(event) => setCategoryValue(event.target.value)}
-            />
+            <InputText value={editedValue} onChange={handleInputChange} />
           ) : (
-            value
+            <span
+              className="category_value"
+              onMouseDown={(event) => event.stopPropagation()}
+            >
+              {value}
+            </span>
           )}
         </div>
 
         {editable ? (
-          <Button buttonType="icon" variant="success" onClick={confirmCategory}>
+          <Button
+            buttonType="icon"
+            variant="success"
+            onClick={handleEditingConfirm}
+          >
             <img
               src="https://cdn-icons-png.flaticon.com/512/1/1687.png"
               alt="Confirm"
@@ -104,7 +94,7 @@ export const Category: FunctionComponent<Props> = ({
           </Button>
         ) : (
           <>
-            <Button buttonType="icon" variant="greyed" onClick={addCategory}>
+            <Button buttonType="icon" variant="greyed" onClick={handleAdd}>
               <img
                 src="https://cdn-icons-png.flaticon.com/512/32/32563.png"
                 alt="Plus"
@@ -139,11 +129,10 @@ export const Category: FunctionComponent<Props> = ({
               isInner
               key={subCategory.id}
               category={subCategory}
-              handlerCategory={handlerCategory}
+              onCategoryChange={onCategoryChange}
               categoryIndex={index}
               boxColor={generatedColor}
               innerCategories={subCategories}
-              onCategoryChange={onCategoryChange}
             />
           ))}
         </div>

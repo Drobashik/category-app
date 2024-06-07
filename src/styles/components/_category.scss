@@ -8,6 +8,12 @@
 
   gap: 2rem;
 
+  &_value {
+    cursor: text;
+
+    padding: 0.25rem 0.5rem;
+  }
+
   &_box {
     position: relative;
     background-color: #fff8f8;
@@ -48,4 +54,12 @@
 
 .category-container {
   position: absolute;
+
+  transform: translate(-50%, -50%);
+
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
 }
