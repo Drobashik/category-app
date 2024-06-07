@@ -28,10 +28,11 @@ $line-size: 2px;
   }
 
   &--transparent {
-    top: -$line-height;
+    top: -$line-height - 1px;
     width: 50%;
     background-color: white;
     transform: translateX(0);
+    height: $line-size + 2px;
 
     &-left {
       left: -$line-size;

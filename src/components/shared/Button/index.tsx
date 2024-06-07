@@ -21,6 +21,7 @@ export const Button: React.FC<PropsWithChildren<Props>> = ({
         `button--${variant}`
       )}
       role="button"
+      onMouseDown={(event) => event.stopPropagation()}
     >
       {children}
     </button>
