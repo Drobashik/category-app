@@ -15,9 +15,16 @@ export const useHandleCategory = (
           editable: true,
           id: Date.now(),
           subCategories: [],
+          new: true,
         },
         clickedId
       );
+    });
+  };
+
+  const handleCancel = () => {
+    onCategoryChange(() => {
+      handlerCategory.cancel(clickedId);
     });
   };
 
@@ -42,6 +49,7 @@ export const useHandleCategory = (
   return {
     handleAdd,
     handleEdit,
+    handleCancel,
     handleConfirm,
     handleRemove,
   };

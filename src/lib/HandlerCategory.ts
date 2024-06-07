@@ -43,6 +43,17 @@ export class HandlerCategory {
     });
   };
 
+  cancel = (id: number) => {
+    this.traverseCategories((node) => {
+      if (id === node.id) {
+        node.editable = false;
+        return true;
+      }
+
+      return false;
+    });
+  };
+
   confirm = (editedValue: string, id: number) => {
     this.traverseCategories((node) => {
       if (id === node.id) {

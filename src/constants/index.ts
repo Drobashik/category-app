@@ -1,1 +1,1 @@
-export const LIGHT_GREY_COLOR = "#f4f4f4";
+export const WHITE_COLOR = "white";
