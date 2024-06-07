@@ -17,7 +17,7 @@ export const CategoryContainer: FunctionComponent<Props> = ({
   };
 
   return (
-    <div className={classNames("category-container", className)} {...props}>
+    <div className={classNames("category_container", className)} {...props}>
       <Category category={category} onCategoryChange={handleCategoryChange} />
     </div>
   );

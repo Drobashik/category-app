@@ -49,8 +49,6 @@ export const Category: FunctionComponent<Props> = ({
 
   const handleResetCancel = () => {
     handleCancel();
-
-    console.log(value);
     handleInputChange(value);
   };
 

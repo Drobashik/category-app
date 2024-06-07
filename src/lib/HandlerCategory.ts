@@ -59,6 +59,7 @@ export class HandlerCategory {
       if (id === node.id) {
         node.value = editedValue;
         node.editable = false;
+        node.new = false;
         return true;
       }
 
