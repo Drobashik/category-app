@@ -1,14 +1,8 @@
-import { FunctionComponent, HTMLAttributes, useState } from "react";
+import { FunctionComponent, memo, useState } from "react";
 import { Category } from ".";
 import { categoryData } from "../../__mocks__/catrgoryData";
-import classNames from "classnames";
 
-type Props = HTMLAttributes<HTMLDivElement>;
-
-export const CategoryContainer: FunctionComponent<Props> = ({
-  className,
-  ...props
-}) => {
+export const CategoryContainer: FunctionComponent = memo(() => {
   const [category, setCategory] = useState(categoryData);
 
   const handleCategoryChange = (action: () => void) => {
@@ -17,8 +11,6 @@ export const CategoryContainer: FunctionComponent<Props> = ({
   };
 
   return (
-    <div className={classNames("category_container", className)} {...props}>
-      <Category category={category} onCategoryChange={handleCategoryChange} />
-    </div>
+    <Category category={category} onCategoryChange={handleCategoryChange} />
   );
-};
+});
