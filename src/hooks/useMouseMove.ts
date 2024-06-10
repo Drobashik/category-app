@@ -53,7 +53,7 @@ export const useMouseMove = () => {
   };
 
   return {
-    postition: { left: `${position.x}px`, top: `${position.y}px` },
+    position: { left: `${position.x}px`, top: `${position.y}px` },
     handlePostition,
     handleStartMove,
     handleMoving,

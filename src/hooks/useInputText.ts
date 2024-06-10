@@ -8,7 +8,7 @@ export const useInputText = (defaultValue: string) => {
   ) => {
     setEditedValue(
       (event as ChangeEvent<HTMLInputElement>)?.target?.value ||
-        (event as string)
+        (typeof event === "string" ? (event as string) : "")
     );
   };
 

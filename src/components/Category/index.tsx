@@ -1,4 +1,4 @@
-import { FunctionComponent, useMemo } from "react";
+import { FunctionComponent, memo, useMemo } from "react";
 import { Line } from "../Line";
 
 import {
@@ -26,125 +26,132 @@ type Props = {
   innerCategories?: CategoryType[];
 };
 
-export const Category: FunctionComponent<Props> = ({
-  category: { value, subCategories, id, editable, new: isNew },
-  onCategoryChange,
-  isInner = false,
-  boxColor = WHITE_COLOR,
-  categoryIndex = 0,
-  innerCategories = [],
-}) => {
-  const { editedValue, handleInputChange } = useInputText(value);
+export const Category: FunctionComponent<Props> = memo(
+  ({
+    category: { value, subCategories, id, editable, new: isNew },
+    onCategoryChange,
+    isInner = false,
+    boxColor = WHITE_COLOR,
+    categoryIndex = 0,
+    innerCategories = [],
+  }) => {
+    const { editedValue, handleInputChange } = useInputText(value);
 
-  const generatedColor = useMemo(() => {
-    return getReadableLightColor();
-  }, []);
+    const generatedColor = useMemo(() => {
+      return getReadableLightColor();
+    }, []);
 
-  const { handleAdd, handleCancel, handleConfirm, handleEdit, handleRemove } =
-    useHandleCategory(id, onCategoryChange);
+    const { handleAdd, handleCancel, handleConfirm, handleEdit, handleRemove } =
+      useHandleCategory(id, onCategoryChange);
 
-  const handleNewValue = () => {
-    handleConfirm(editedValue);
-  };
+    const handleNewValue = () => {
+      handleConfirm(editedValue);
+    };
 
-  const handleResetCancel = () => {
-    handleCancel();
-    handleInputChange(value);
-  };
+    const handleResetCancel = () => {
+      handleCancel();
+      handleInputChange(value);
+    };
 
-  return (
-    <div className="category">
-      {isInner && (
-        <>
-          {categoryIndex === 0 && (
-            <Line
-              position="central"
-              type="transparent"
-              transparentPosition="left"
-            />
-          )}
-
-          <Line position="top" />
-
-          {categoryIndex === innerCategories.length - 1 && (
-            <Line
-              position="central"
-              type="transparent"
-              transparentPosition="right"
-            />
-          )}
-        </>
-      )}
-      <div className="category_wrapper">
-        <div
-          className="category_box"
-          style={{ background: editable ? "white" : boxColor }}
-        >
-          {editable ? (
-            <InputText value={editedValue} onChange={handleInputChange} />
-          ) : (
-            <span
-              className="category_value"
-              onMouseDown={(event) => event.stopPropagation()}
-            >
-              {value}
-            </span>
-          )}
-        </div>
-
-        {editable ? (
+    return (
+      <div className="category">
+        {isInner && (
           <>
-            <Button
-              buttonType="icon"
-              variant="success"
-              onClick={handleNewValue}
-            >
-              <ConfirmSVG />
-            </Button>
-            <Button
-              buttonType="icon"
-              variant="error"
-              onClick={isNew ? handleRemove : handleResetCancel}
-            >
-              <CrossSVG />
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button buttonType="icon" variant="greyed" onClick={handleAdd}>
-              <PlusSVG />
-            </Button>
-            <Button buttonType="icon" variant="info" onClick={handleEdit}>
-              <EditSVG />
-            </Button>
-            {isInner && (
-              <Button buttonType="icon" variant="error" onClick={handleRemove}>
-                <CrossSVG />
-              </Button>
+            {categoryIndex === 0 && (
+              <Line
+                position="central"
+                type="transparent"
+                transparentPosition="left"
+              />
+            )}
+
+            <Line position="top" />
+
+            {categoryIndex === innerCategories.length - 1 && (
+              <Line
+                position="central"
+                type="transparent"
+                transparentPosition="right"
+              />
             )}
           </>
         )}
+        <div className="category_wrapper">
+          <div
+            className="category_box"
+            id={`el-${id.toString()}`}
+            style={{ background: editable ? "white" : boxColor }}
+          >
+            {editable ? (
+              <InputText value={editedValue} onChange={handleInputChange} />
+            ) : (
+              <span
+                className="category_value"
+                onMouseDown={(event) => event.stopPropagation()}
+              >
+                {value}
+              </span>
+            )}
+          </div>
 
-        {!!subCategories.length && <Line position="bottom" />}
-      </div>
+          {editable ? (
+            <>
+              <Button
+                buttonType="icon"
+                variant="success"
+                onClick={handleNewValue}
+              >
+                <ConfirmSVG />
+              </Button>
+              <Button
+                buttonType="icon"
+                variant="error"
+                onClick={isNew ? handleRemove : handleResetCancel}
+              >
+                <CrossSVG />
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button buttonType="icon" variant="greyed" onClick={handleAdd}>
+                <PlusSVG />
+              </Button>
+              <Button buttonType="icon" variant="info" onClick={handleEdit}>
+                <EditSVG />
+              </Button>
+              {isInner && (
+                <Button
+                  buttonType="icon"
+                  variant="error"
+                  onClick={handleRemove}
+                >
+                  <CrossSVG />
+                </Button>
+              )}
+            </>
+          )}
 
-      {!!subCategories.length && (
-        <div className="category_sub">
-          <Line position="central" />
-
-          {subCategories.map((subCategory, index) => (
-            <Category
-              isInner
-              key={subCategory.id}
-              category={subCategory}
-              onCategoryChange={onCategoryChange}
-              categoryIndex={index}
-              boxColor={generatedColor}
-              innerCategories={subCategories}
-            />
-          ))}
+          {!!subCategories.length && <Line position="bottom" />}
         </div>
-      )}
-    </div>
-  );
-};
+
+        {!!subCategories.length && (
+          <div className="category_sub">
+            <Line position="central" />
+
+            {subCategories.map((subCategory, index) => (
+              <Category
+                isInner
+                key={subCategory.id}
+                category={subCategory}
+                onCategoryChange={onCategoryChange}
+                categoryIndex={index}
+                boxColor={generatedColor}
+                innerCategories={subCategories}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+);
