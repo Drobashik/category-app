@@ -3,15 +3,13 @@ import { CategoryType } from "../types/Category.type";
 export class HandlerCategory {
   constructor(private category: CategoryType) {}
 
-  private traverseCategories = (
-    changeCallback: (node: CategoryType) => boolean
-  ) => {
+  private traverseCategories = (change: (node: CategoryType) => boolean) => {
     const stack = [this.category];
 
     while (stack.length > 0) {
       const node = stack.pop() as CategoryType;
 
-      if (changeCallback(node)) {
+      if (change(node)) {
         return;
       }
 
@@ -54,10 +52,10 @@ export class HandlerCategory {
     });
   };
 
-  confirm = (editedValue: string, id: number) => {
+  confirm = (newValue: string, id: number) => {
     this.traverseCategories((node) => {
       if (id === node.id) {
-        node.value = editedValue;
+        node.value = newValue;
         node.editable = false;
         node.new = false;
         return true;
