@@ -6,6 +6,6 @@ export const CENTRAL_POSITION = {
 };
 
 export const INITIAL_CATEGORY_SIZE = 100;
-export const MIN_SIZE = 25;
-export const MAX_SIZE = 225;
+export const MIN_SIZE = 50;
+export const MAX_SIZE = 200;
 export const SIZE_STEP = 25;

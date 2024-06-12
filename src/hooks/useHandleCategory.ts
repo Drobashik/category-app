@@ -5,20 +5,23 @@ const handlerCategory = new HandlerCategory(categoryData);
 
 export const useHandleCategory = (
   clickedId: number,
-  onCategoryChange: (action: () => void) => void
+  onCategoryChange: (action: () => void) => number | void
 ) => {
   const handleAdd = () => {
     onCategoryChange(() => {
+      const id = Date.now();
       handlerCategory.add(
         {
+          id,
           value: "",
           editable: true,
-          id: Date.now(),
           subCategories: [],
           new: true,
         },
         clickedId
       );
+
+      return id;
     });
   };
 

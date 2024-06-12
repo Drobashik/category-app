@@ -13,7 +13,6 @@ export const InputText: FunctionComponent<Props> = ({
       className={classNames("input-text", className)}
       type="text"
       onMouseDown={(event) => event.stopPropagation()}
-      autoFocus
     />
   );
 };
