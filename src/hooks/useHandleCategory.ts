@@ -4,48 +4,49 @@ import { HandlerCategory } from "../lib/HandlerCategory";
 const handlerCategory = new HandlerCategory(categoryData);
 
 export const useHandleCategory = (
-  clickedId: number,
+  { id, newValue }: { id: number; newValue: string },
   onCategoryChange: (action: () => void) => number | void
 ) => {
   const handleAdd = () => {
     onCategoryChange(() => {
-      const id = Date.now();
+      const newID = Date.now();
+
       handlerCategory.add(
         {
-          id,
+          id: newID,
           value: "",
           editable: true,
           subCategories: [],
           new: true,
         },
-        clickedId
+        id
       );
 
-      return id;
+      return newID;
     });
   };
 
   const handleCancel = () => {
     onCategoryChange(() => {
-      handlerCategory.cancel(clickedId);
+      handlerCategory.cancel(id);
     });
   };
 
   const handleEdit = () => {
     onCategoryChange(() => {
-      handlerCategory.edit(clickedId);
+      handlerCategory.edit(id);
     });
   };
 
-  const handleConfirm = (editedValue: string) => {
+  const handleConfirm = () => {
     onCategoryChange(() => {
-      handlerCategory.confirm(editedValue, clickedId);
+      handlerCategory.confirm(newValue, id);
     });
   };
 
-  const handleRemove = () => {
+  const handleDelete = () => {
     onCategoryChange(() => {
-      handlerCategory.delete(clickedId);
+      handlerCategory.delete(id);
     });
   };
 
@@ -54,6 +55,6 @@ export const useHandleCategory = (
     handleEdit,
     handleCancel,
     handleConfirm,
-    handleRemove,
+    handleDelete,
   };
 };

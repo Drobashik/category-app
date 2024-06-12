@@ -1,4 +1,4 @@
-import { FunctionComponent, memo, useMemo } from "react";
+import { ChangeEvent, FunctionComponent, memo, useMemo, useState } from "react";
 import { Line } from "../Line";
 
 import {
@@ -15,7 +15,6 @@ import { WHITE_COLOR } from "../../constants";
 import { getReadableLightColor } from "../../helpers";
 import { CategoryType } from "../../types/Category.type";
 import { useHandleCategory } from "../../hooks/useHandleCategory";
-import { useInputText } from "../../hooks/useInputText";
 
 type Props = {
   category: CategoryType;
@@ -35,23 +34,21 @@ export const Category: FunctionComponent<Props> = memo(
     categoryIndex = 0,
     innerCategories = [],
   }) => {
-    const { editedValue, handleInputChange } = useInputText(value);
+    const [newValue, setNewValue] = useState(value);
 
-    const generatedColor = useMemo(() => {
-      return getReadableLightColor();
-    }, []);
+    const { handleAdd, handleCancel, handleConfirm, handleEdit, handleDelete } =
+      useHandleCategory({ id, newValue }, onCategoryChange);
 
-    const { handleAdd, handleCancel, handleConfirm, handleEdit, handleRemove } =
-      useHandleCategory(id, onCategoryChange);
-
-    const handleNewValue = () => {
-      handleConfirm(editedValue);
+    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+      setNewValue(event.target.value);
     };
 
-    const handleResetCancel = () => {
+    const handleCancelReset = () => {
       handleCancel();
-      handleInputChange(value);
+      setNewValue(value);
     };
+
+    const generatedColor = useMemo(() => getReadableLightColor(), []);
 
     return (
       <div className="category">
@@ -83,7 +80,7 @@ export const Category: FunctionComponent<Props> = memo(
             style={{ background: editable ? "white" : boxColor }}
           >
             {editable ? (
-              <InputText value={editedValue} onChange={handleInputChange} />
+              <InputText value={newValue} onChange={handleInputChange} />
             ) : (
               <span
                 className="category_value"
@@ -99,14 +96,14 @@ export const Category: FunctionComponent<Props> = memo(
               <Button
                 buttonType="icon"
                 variant="success"
-                onClick={handleNewValue}
+                onClick={handleConfirm}
               >
                 <ConfirmSVG />
               </Button>
               <Button
                 buttonType="icon"
                 variant="error"
-                onClick={isNew ? handleRemove : handleResetCancel}
+                onClick={isNew ? handleDelete : handleCancelReset}
               >
                 <CrossSVG />
               </Button>
@@ -123,7 +120,7 @@ export const Category: FunctionComponent<Props> = memo(
                 <Button
                   buttonType="icon"
                   variant="error"
-                  onClick={handleRemove}
+                  onClick={handleDelete}
                 >
                   <CrossSVG />
                 </Button>

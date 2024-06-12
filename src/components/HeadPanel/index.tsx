@@ -1,17 +1,12 @@
-import { FunctionComponent } from "react";
-
-import { Button } from "../shared/Button";
-import { CenterSVG } from "../shared/SvgIcon/Icons";
+import { FunctionComponent, PropsWithChildren } from "react";
 
 type Props = {
   onPositionChange: (x: number, y: number) => void;
 };
 
-export const HeadPanel: FunctionComponent<Props> = ({ onPositionChange }) => {
-  const handleCenterPosition = () => {
-    onPositionChange(window.innerWidth / 2, window.innerHeight / 2);
-  };
-
+export const HeadPanel: FunctionComponent<PropsWithChildren<Props>> = ({
+  children,
+}) => {
   return (
     <header className="head-panel">
       <div className="head-panel_title">
@@ -21,12 +16,7 @@ export const HeadPanel: FunctionComponent<Props> = ({ onPositionChange }) => {
         />
         <h1>Category</h1>
       </div>
-      <div className="head-panel_control">
-        <Button onClick={handleCenterPosition}>
-          <CenterSVG />
-        </Button>
-        <Button variant="blue">List</Button>
-      </div>
+      <div className="head-panel_control">{children}</div>
     </header>
   );
 };
