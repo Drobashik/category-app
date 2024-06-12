@@ -5,9 +5,9 @@ const handlerCategory = new HandlerCategory(categoryData);
 
 export const useHandleCategory = (
   { id, newValue }: { id: number; newValue: string },
-  onCategoryChange: (action: () => void) => number | void
+  onCategoryChange: (action: () => number) => void
 ) => {
-  const handleAdd = () => {
+  const addCategory = () => {
     onCategoryChange(() => {
       const newID = Date.now();
 
@@ -26,35 +26,43 @@ export const useHandleCategory = (
     });
   };
 
-  const handleCancel = () => {
+  const cancelCategory = () => {
     onCategoryChange(() => {
       handlerCategory.cancel(id);
+
+      return id;
     });
   };
 
-  const handleEdit = () => {
+  const editCategory = () => {
     onCategoryChange(() => {
       handlerCategory.edit(id);
+
+      return id;
     });
   };
 
-  const handleConfirm = () => {
+  const confirmCategory = () => {
     onCategoryChange(() => {
       handlerCategory.confirm(newValue, id);
+
+      return id;
     });
   };
 
-  const handleDelete = () => {
+  const deleteCategory = () => {
     onCategoryChange(() => {
       handlerCategory.delete(id);
+
+      return id;
     });
   };
 
   return {
-    handleAdd,
-    handleEdit,
-    handleCancel,
-    handleConfirm,
-    handleDelete,
+    addCategory,
+    editCategory,
+    cancelCategory,
+    confirmCategory,
+    deleteCategory,
   };
 };

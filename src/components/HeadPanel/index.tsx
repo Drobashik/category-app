@@ -1,10 +1,6 @@
 import { FunctionComponent, PropsWithChildren } from "react";
 
-type Props = {
-  onPositionChange: (x: number, y: number) => void;
-};
-
-export const HeadPanel: FunctionComponent<PropsWithChildren<Props>> = ({
+export const HeadPanel: FunctionComponent<PropsWithChildren> = ({
   children,
 }) => {
   return (
