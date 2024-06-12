@@ -8,11 +8,15 @@ export const useMouseMove = () => {
 
   const [position, setPosition] = useState(CENTRAL_POSITION);
 
-  const handlePostition = (x: number, y: number) => {
+  const changePosition = (x: number, y: number) => {
     setPosition({ x, y });
   };
 
-  const handleStartMove = ({ currentTarget, clientX, clientY }: MouseEvent) => {
+  const moveToScreenCenter = () => {
+    setPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+  };
+
+  const startMove = ({ currentTarget, clientX, clientY }: MouseEvent) => {
     const targeted = currentTarget as HTMLDivElement;
     const parent = targeted.parentElement as HTMLDivElement;
 
@@ -34,7 +38,7 @@ export const useMouseMove = () => {
     isReadyMoveRef.current = true;
   };
 
-  const handleMoving = ({ currentTarget, clientX, clientY }: MouseEvent) => {
+  const mouseMoving = ({ currentTarget, clientX, clientY }: MouseEvent) => {
     if (!isReadyMoveRef.current) return;
 
     const targeted = (currentTarget as HTMLDivElement)
@@ -42,21 +46,22 @@ export const useMouseMove = () => {
     const parent = (currentTarget as HTMLDivElement)
       .parentElement as HTMLDivElement;
 
-    handlePostition(
+    changePosition(
       clientX - parent.offsetLeft - (targeted.offsetWidth - parallelPos.x),
       clientY - parent.offsetTop - (targeted.offsetHeight - parallelPos.y)
     );
   };
 
-  const handleStopMove = () => {
+  const stopMove = () => {
     isReadyMoveRef.current = false;
   };
 
   return {
     position,
-    handlePostition,
-    handleStartMove,
-    handleMoving,
-    handleStopMove,
+    changePosition,
+    moveToScreenCenter,
+    startMove,
+    mouseMoving,
+    stopMove,
   };
 };

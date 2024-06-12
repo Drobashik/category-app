@@ -18,7 +18,7 @@ import { useHandleCategory } from "../../hooks/useHandleCategory";
 
 type Props = {
   category: CategoryType;
-  onCategoryChange: (action: () => void) => number | void;
+  onCategoryChange: (action: () => number) => void;
   isInner?: boolean;
   boxColor?: string;
   categoryIndex?: number;
@@ -36,15 +36,20 @@ export const Category: FunctionComponent<Props> = memo(
   }) => {
     const [newValue, setNewValue] = useState(value);
 
-    const { handleAdd, handleCancel, handleConfirm, handleEdit, handleDelete } =
-      useHandleCategory({ id, newValue }, onCategoryChange);
+    const {
+      addCategory,
+      cancelCategory,
+      confirmCategory,
+      editCategory,
+      deleteCategory,
+    } = useHandleCategory({ id, newValue }, onCategoryChange);
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
       setNewValue(event.target.value);
     };
 
-    const handleCancelReset = () => {
-      handleCancel();
+    const handleCancel = () => {
+      cancelCategory();
       setNewValue(value);
     };
 
@@ -96,31 +101,31 @@ export const Category: FunctionComponent<Props> = memo(
               <Button
                 buttonType="icon"
                 variant="success"
-                onClick={handleConfirm}
+                onClick={confirmCategory}
               >
                 <ConfirmSVG />
               </Button>
               <Button
                 buttonType="icon"
                 variant="error"
-                onClick={isNew ? handleDelete : handleCancelReset}
+                onClick={isNew ? deleteCategory : handleCancel}
               >
                 <CrossSVG />
               </Button>
             </>
           ) : (
             <>
-              <Button buttonType="icon" variant="greyed" onClick={handleAdd}>
+              <Button buttonType="icon" variant="greyed" onClick={addCategory}>
                 <PlusSVG />
               </Button>
-              <Button buttonType="icon" variant="info" onClick={handleEdit}>
+              <Button buttonType="icon" variant="info" onClick={editCategory}>
                 <EditSVG />
               </Button>
               {isInner && (
                 <Button
                   buttonType="icon"
                   variant="error"
-                  onClick={handleDelete}
+                  onClick={deleteCategory}
                 >
                   <CrossSVG />
                 </Button>
