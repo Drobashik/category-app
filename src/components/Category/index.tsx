@@ -19,7 +19,7 @@ import { useInputText } from "../../hooks/useInputText";
 
 type Props = {
   category: CategoryType;
-  onCategoryChange: (action: () => void) => void;
+  onCategoryChange: (action: () => void) => number | void;
   isInner?: boolean;
   boxColor?: string;
   categoryIndex?: number;
