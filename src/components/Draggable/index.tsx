@@ -14,20 +14,22 @@ export const Draggable: FunctionComponent<PropsWithChildren<Props>> = ({
   onMoving,
   onStopMoving,
 }) => {
+  const positionStyle = {
+    left: `${position.x}px`,
+    top: `${position.y}px`,
+  };
+
   return (
     <div
       className="draggable-field"
-      onMouseLeave={onStopMoving}
-      onMouseUp={onStopMoving}
-      onMouseMove={onMoving}
+      onPointerLeave={onStopMoving}
+      onPointerUp={onStopMoving}
+      onPointerMove={onMoving}
     >
       <div
         className="draggable-item"
-        onMouseDown={onStartMove}
-        style={{
-          left: `${position.x}px`,
-          top: `${position.y}px`,
-        }}
+        onPointerDown={onStartMove}
+        style={positionStyle}
       >
         {children}
       </div>

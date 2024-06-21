@@ -8,6 +8,8 @@
 
   gap: 2rem;
 
+  transition: all 200ms;
+
   &_value {
     cursor: text;
   }
@@ -43,6 +45,7 @@
     gap: 0.5rem;
 
     position: relative;
+    animation: appear 1s;
   }
 
   &_sub {

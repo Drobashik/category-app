@@ -23,6 +23,7 @@ type Props = {
   boxColor?: string;
   categoryIndex?: number;
   innerCategories?: CategoryType[];
+  onOpenDialog: (idToDelete: number) => void;
 };
 
 export const Category: FunctionComponent<Props> = memo(
@@ -33,6 +34,7 @@ export const Category: FunctionComponent<Props> = memo(
     boxColor = WHITE_COLOR,
     categoryIndex = 0,
     innerCategories = [],
+    onOpenDialog,
   }) => {
     const [newValue, setNewValue] = useState(value);
 
@@ -125,7 +127,11 @@ export const Category: FunctionComponent<Props> = memo(
                 <Button
                   buttonType="icon"
                   variant="error"
-                  onClick={deleteCategory}
+                  onClick={
+                    subCategories.length
+                      ? () => onOpenDialog(id)
+                      : deleteCategory
+                  }
                 >
                   <CrossSVG />
                 </Button>
@@ -149,6 +155,7 @@ export const Category: FunctionComponent<Props> = memo(
                 categoryIndex={index}
                 boxColor={generatedColor}
                 innerCategories={subCategories}
+                onOpenDialog={onOpenDialog}
               />
             ))}
           </div>

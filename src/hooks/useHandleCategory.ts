@@ -1,28 +1,30 @@
-import { categoryData } from "../__mocks__/catrgoryData";
+import { categoryData } from "../__mocks__/categoryData";
 import { HandlerCategory } from "../lib/HandlerCategory";
 
 const handlerCategory = new HandlerCategory(categoryData);
 
+type HandledCategory = {
+  id: number;
+  newValue?: string;
+};
+
 export const useHandleCategory = (
-  { id, newValue }: { id: number; newValue: string },
+  { id, newValue }: HandledCategory,
   onCategoryChange: (action: () => number) => void
 ) => {
   const addCategory = () => {
     onCategoryChange(() => {
-      const newID = Date.now();
+      const newCategory = {
+        id: Date.now(),
+        value: "",
+        editable: true,
+        subCategories: [],
+        new: true,
+      };
 
-      handlerCategory.add(
-        {
-          id: newID,
-          value: "",
-          editable: true,
-          subCategories: [],
-          new: true,
-        },
-        id
-      );
+      handlerCategory.add(newCategory, id);
 
-      return newID;
+      return newCategory.id;
     });
   };
 
@@ -44,7 +46,7 @@ export const useHandleCategory = (
 
   const confirmCategory = () => {
     onCategoryChange(() => {
-      handlerCategory.confirm(newValue, id);
+      handlerCategory.confirm(newValue ?? "", id);
 
       return id;
     });

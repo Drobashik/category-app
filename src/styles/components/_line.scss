@@ -12,6 +12,8 @@ $line-size: 2px;
 
   z-index: 1;
 
+  animation: appear 1s;
+
   &--top {
     top: -$line-height;
   }
@@ -33,6 +35,8 @@ $line-size: 2px;
     background-color: white;
     transform: translateX(0);
     height: $line-size + 2px;
+
+    animation: none;
 
     &-left {
       left: -$line-size;
