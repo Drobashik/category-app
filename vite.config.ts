@@ -7,5 +7,6 @@ export default defineConfig({
   server: {
     open: "../public/index.html",
     port: 3000,
+    host: true,
   },
 });

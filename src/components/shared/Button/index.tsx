@@ -10,6 +10,7 @@ export const Button: React.FC<PropsWithChildren<Props>> = ({
   children,
   buttonType = "default",
   variant = "light",
+  className,
   ...restProps
 }) => {
   return (
@@ -18,7 +19,8 @@ export const Button: React.FC<PropsWithChildren<Props>> = ({
       className={classnames(
         "button",
         `button--${buttonType}`,
-        `button--${variant}`
+        `button--${variant}`,
+        className
       )}
       role="button"
       onMouseDown={(event) => event.stopPropagation()}

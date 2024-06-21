@@ -1,0 +1,20 @@
+.modal {
+  &_content {
+    margin-bottom: 1rem;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 0.5rem;
+  }
+
+  &_footer {
+    display: flex;
+
+    gap: 1rem;
+
+    & button {
+      width: 100%;
+    }
+  }
+}

@@ -75,18 +75,34 @@ $icon-size: 2rem;
 
   &--success {
     background-color: #11b827;
+
+    &:hover {
+      background-color: #23d73b;
+    }
   }
 
   &--greyed {
     background-color: #b1b1b1;
+
+    &:hover {
+      background-color: #c9c9c9;
+    }
   }
 
   &--info {
     background-color: #2eb3ff;
+
+    &:hover {
+      background-color: #63c6ff;
+    }
   }
 
   &--error {
     background-color: #fe6464;
+
+    &:hover {
+      background-color: #ff8080;
+    }
   }
 
   & svg {
