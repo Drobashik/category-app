@@ -1,5 +1,5 @@
-import classNames from "classnames";
 import { FunctionComponent } from "react";
+import classNames from "classnames";
 
 type Props = {
   position: "top" | "bottom" | "central";

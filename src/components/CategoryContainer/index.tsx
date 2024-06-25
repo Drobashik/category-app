@@ -1,4 +1,5 @@
 import { ChangeEvent, FunctionComponent, memo, useMemo, useState } from "react";
+
 import { Line } from "../Line";
 
 import {
@@ -13,20 +14,20 @@ import { InputText } from "../shared/InputText";
 import { WHITE_COLOR } from "../../constants";
 
 import { getReadableLightColor } from "../../helpers";
-import { CategoryType } from "../../types/Category.type";
+import { Category } from "../../types/Category.type";
 import { useHandleCategory } from "../../hooks/useHandleCategory";
 
 type Props = {
-  category: CategoryType;
+  category: Category;
   onCategoryChange: (action: () => number) => void;
   isInner?: boolean;
   boxColor?: string;
   categoryIndex?: number;
-  innerCategories?: CategoryType[];
+  innerCategories?: Category[];
   onOpenDialog: (idToDelete: number) => void;
 };
 
-export const Category: FunctionComponent<Props> = memo(
+export const CategoryContainer: FunctionComponent<Props> = memo(
   ({
     category: { value, subCategories, id, editable, new: isNew },
     onCategoryChange,
@@ -58,7 +59,7 @@ export const Category: FunctionComponent<Props> = memo(
     const generatedColor = useMemo(() => getReadableLightColor(), []);
 
     return (
-      <div className="category">
+      <div className="category-container">
         {isInner && (
           <>
             {categoryIndex === 0 && (
@@ -80,9 +81,9 @@ export const Category: FunctionComponent<Props> = memo(
             )}
           </>
         )}
-        <div className="category_wrapper">
+        <div className="category-container_wrapper">
           <div
-            className="category_box"
+            className="category-container_box"
             id={`el-${id.toString()}`}
             style={{ background: editable ? "white" : boxColor }}
           >
@@ -90,8 +91,8 @@ export const Category: FunctionComponent<Props> = memo(
               <InputText value={newValue} onChange={handleInputChange} />
             ) : (
               <span
-                className="category_value"
-                onMouseDown={(event) => event.stopPropagation()}
+                className="category-container_value"
+                onPointerDown={(event) => event.stopPropagation()}
               >
                 {value}
               </span>
@@ -143,11 +144,11 @@ export const Category: FunctionComponent<Props> = memo(
         </div>
 
         {!!subCategories.length && (
-          <div className="category_sub">
+          <div className="category-container_sub">
             <Line position="central" />
 
             {subCategories.map((subCategory, index) => (
-              <Category
+              <CategoryContainer
                 isInner
                 key={subCategory.id}
                 category={subCategory}

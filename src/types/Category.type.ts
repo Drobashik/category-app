@@ -1,7 +1,7 @@
-export type CategoryType = {
+export type Category = {
   value: string;
   id: number;
-  subCategories: CategoryType[];
+  subCategories: Category[];
   editable: boolean;
   new: boolean;
 };

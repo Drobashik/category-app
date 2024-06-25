@@ -1,18 +1,27 @@
-import { FunctionComponent, MouseEvent, PropsWithChildren } from "react";
+import {
+  FunctionComponent,
+  MouseEvent,
+  PropsWithChildren,
+  WheelEvent,
+} from "react";
 
 type Props = {
+  zoom: number;
   position: { x: number; y: number };
   onStartMove: (event: MouseEvent) => void;
   onMoving: (event: MouseEvent) => void;
   onStopMoving: (event: MouseEvent) => void;
+  onWheel: (event: WheelEvent) => void;
 };
 
 export const Draggable: FunctionComponent<PropsWithChildren<Props>> = ({
   children,
+  zoom,
   position,
   onStartMove,
   onMoving,
   onStopMoving,
+  onWheel,
 }) => {
   const positionStyle = {
     left: `${position.x}px`,
@@ -25,11 +34,12 @@ export const Draggable: FunctionComponent<PropsWithChildren<Props>> = ({
       onPointerLeave={onStopMoving}
       onPointerUp={onStopMoving}
       onPointerMove={onMoving}
+      onWheel={onWheel}
     >
       <div
         className="draggable-item"
         onPointerDown={onStartMove}
-        style={positionStyle}
+        style={{ ...positionStyle, transform: `scale(${zoom})` }}
       >
         {children}
       </div>
