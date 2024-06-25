@@ -23,7 +23,7 @@ export const Button: React.FC<PropsWithChildren<Props>> = ({
         className
       )}
       role="button"
-      onMouseDown={(event) => event.stopPropagation()}
+      onPointerDown={(event) => event.stopPropagation()}
     >
       {children}
     </button>

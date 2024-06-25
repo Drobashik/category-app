@@ -1,16 +1,18 @@
-import { CategoryType } from "../types/Category.type";
+import { Category } from "../types/Category.type";
 
 export class HandlerCategory {
-  constructor(private category: CategoryType) {}
+  constructor(private category: Category) {}
 
-  private traverseCategories = (change: (node: CategoryType) => boolean) => {
+  private traverseCategories = (change: (node: Category) => boolean) => {
     const stack = [this.category];
 
     while (stack.length > 0) {
-      const node = stack.pop() as CategoryType;
+      const node = stack.pop() as Category;
 
-      if (change(node)) {
-        return;
+      const success = change(node);
+
+      if (success) {
+        break;
       }
 
       if (node.subCategories.length) {
@@ -19,7 +21,7 @@ export class HandlerCategory {
     }
   };
 
-  add = (newCategory: CategoryType, id: number) => {
+  add = (newCategory: Category, id: number) => {
     this.traverseCategories((node) => {
       if (id === node.id) {
         node.subCategories.push(newCategory);
@@ -34,6 +36,7 @@ export class HandlerCategory {
     this.traverseCategories((node) => {
       if (id === node.id) {
         node.editable = true;
+
         return true;
       }
 
@@ -45,6 +48,7 @@ export class HandlerCategory {
     this.traverseCategories((node) => {
       if (id === node.id) {
         node.editable = false;
+
         return true;
       }
 
@@ -58,6 +62,7 @@ export class HandlerCategory {
         node.value = newValue;
         node.editable = false;
         node.new = false;
+
         return true;
       }
 
@@ -73,6 +78,7 @@ export class HandlerCategory {
 
       if (index !== -1) {
         node.subCategories.splice(index, 1);
+
         return true;
       }
 

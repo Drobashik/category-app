@@ -1,14 +1,18 @@
 import { useCallback, useState } from "react";
+
 import { useMouseMove } from "../../hooks/useMouseMove";
-import { HeadPanel } from "../HeadPanel";
+import { useHandleCategory } from "../../hooks/useHandleCategory";
+import { useFocus } from "../../hooks/useFocus";
 import { categoryData } from "../../__mocks__/categoryData";
-import { Category } from "../Category";
+
+import { HeadPanel } from "../HeadPanel";
+import { CategoryContainer } from "../CategoryContainer";
+import { Draggable } from "../Draggable";
+
 import { Button } from "../shared/Button";
 import { CenterSVG } from "../shared/SvgIcon/Icons";
-import { Draggable } from "../Draggable";
-import { useFocus } from "../../hooks/useFocus";
 import { Dialog } from "../shared/Dialog";
-import { useHandleCategory } from "../../hooks/useHandleCategory";
+import { useZoom } from "../../hooks/useZoom";
 
 export const Container = () => {
   const [category, setCategory] = useState(categoryData);
@@ -44,6 +48,8 @@ export const Container = () => {
     handleCategoryChange
   );
 
+  const { zoom, zoomChange } = useZoom(position, changePosition);
+
   const handleDeleteConfirmation = () => {
     deleteCategory();
     setCategory({ ...categoryData });
@@ -69,12 +75,14 @@ export const Container = () => {
       </HeadPanel>
 
       <Draggable
+        zoom={zoom}
         position={position}
         onStartMove={startMove}
         onMoving={mouseMoving}
         onStopMoving={stopMove}
+        onWheel={zoomChange}
       >
-        <Category
+        <CategoryContainer
           category={category}
           onCategoryChange={handleCategoryChange}
           onOpenDialog={handleOpenDialog}

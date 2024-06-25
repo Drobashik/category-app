@@ -1,12 +1,14 @@
 import { MouseEvent, useRef, useState } from "react";
-import { CENTRAL_POSITION } from "../constants";
 
 export const useMouseMove = () => {
   const isReadyMoveRef = useRef(false);
 
-  const [parallelPos, setParallelPos] = useState({ x: 0, y: 0 });
+  const relativePosition = useRef({ x: 0, y: 0 });
 
-  const [position, setPosition] = useState(CENTRAL_POSITION);
+  const [position, setPosition] = useState({
+    x: window.innerWidth / 2,
+    y: window.innerHeight / 2,
+  });
 
   const changePosition = (x: number, y: number) => {
     setPosition({ x, y });
@@ -16,39 +18,21 @@ export const useMouseMove = () => {
     setPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
   };
 
-  const startMove = ({ currentTarget, clientX, clientY }: MouseEvent) => {
-    const targeted = currentTarget as HTMLDivElement;
-    const parent = targeted.parentElement as HTMLDivElement;
-
-    setParallelPos({
-      x:
-        (clientX -
-          targeted.offsetLeft -
-          parent.offsetLeft -
-          targeted.offsetWidth) *
-        -1,
-      y:
-        (clientY -
-          targeted.offsetTop -
-          parent.offsetTop -
-          targeted.offsetHeight) *
-        -1,
-    });
+  const startMove = ({ clientX, clientY }: MouseEvent) => {
+    relativePosition.current = {
+      x: clientX - position.x,
+      y: clientY - position.y,
+    };
 
     isReadyMoveRef.current = true;
   };
 
-  const mouseMoving = ({ currentTarget, clientX, clientY }: MouseEvent) => {
+  const mouseMoving = ({ clientX, clientY }: MouseEvent) => {
     if (!isReadyMoveRef.current) return;
 
-    const targeted = (currentTarget as HTMLDivElement)
-      .firstElementChild as HTMLDivElement;
-    const parent = (currentTarget as HTMLDivElement)
-      .parentElement as HTMLDivElement;
-
     changePosition(
-      clientX - parent.offsetLeft - (targeted.offsetWidth - parallelPos.x),
-      clientY - parent.offsetTop - (targeted.offsetHeight - parallelPos.y)
+      clientX - relativePosition.current.x,
+      clientY - relativePosition.current.y
     );
   };
 
