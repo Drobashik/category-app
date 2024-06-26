@@ -163,5 +163,5 @@ export const CategoryNode: FunctionComponent<Props> = memo(
         )}
       </div>
     );
-  }
+  },
 );

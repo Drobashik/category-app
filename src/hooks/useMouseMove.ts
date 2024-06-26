@@ -32,7 +32,7 @@ export const useMouseMove = () => {
 
     changePosition(
       clientX - relativePosition.current.x,
-      clientY - relativePosition.current.y
+      clientY - relativePosition.current.y,
     );
   };
 

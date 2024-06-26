@@ -1,4 +1,6 @@
 import { categoryData } from "../__mocks__/categoryData";
+import { MAX_POSSIBLE_ID } from "../constants";
+import { getRandom, getRandomId } from "../helpers";
 import { HandlerCategory } from "../lib/HandlerCategory";
 
 const handlerCategory = new HandlerCategory(categoryData);
@@ -10,12 +12,12 @@ type HandledCategory = {
 
 export const useHandleCategory = (
   { id, newValue }: HandledCategory,
-  onCategoryChange: (action: () => number) => void
+  onCategoryChange: (action: () => number) => void,
 ) => {
   const addCategory = () => {
     onCategoryChange(() => {
       const newCategory = {
-        id: parseInt(Date.now().toString().split("").reverse().join("")),
+        id: getRandomId(),
         value: "",
         editable: true,
         subCategories: [],
@@ -47,8 +49,8 @@ export const useHandleCategory = (
   const confirmCategory = () => {
     onCategoryChange(() => {
       handlerCategory.confirm(
-        newValue || `New_${Math.floor(Math.random() * 10000)}`,
-        id
+        newValue || `Node_${getRandom(MAX_POSSIBLE_ID)}`,
+        id,
       );
 
       return id;

@@ -6,7 +6,7 @@ let scrolled = true;
 export const useZoom = (
   position: { x: number; y: number },
   changePosition: (x: number, y: number) => void,
-  isRelativeToCursor = true
+  isRelativeToCursor = true,
 ) => {
   const [zoom, setZoom] = useState(1);
 

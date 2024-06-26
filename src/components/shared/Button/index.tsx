@@ -20,7 +20,7 @@ export const Button: React.FC<PropsWithChildren<Props>> = ({
         "button",
         `button--${buttonType}`,
         `button--${variant}`,
-        className
+        className,
       )}
       role="button"
       onPointerDown={(event) => event.stopPropagation()}

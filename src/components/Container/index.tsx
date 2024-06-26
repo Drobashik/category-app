@@ -46,12 +46,12 @@ export const Container = () => {
 
       setCategory({ ...categoryData });
     },
-    [category]
+    [category],
   );
 
   const { deleteCategory } = useHandleCategory(
     { id: idToDelete },
-    handleCategoryChange
+    handleCategoryChange,
   );
 
   const handleOpenDialog = (idToDelete: number) => {
