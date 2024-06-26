@@ -35,7 +35,7 @@ export const useZoom = (
 
       setTimeout(() => {
         scrolled = true;
-      }, 500);
+      }, 300);
     }
   };
 

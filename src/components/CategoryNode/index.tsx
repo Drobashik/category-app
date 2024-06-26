@@ -27,7 +27,7 @@ type Props = {
   onOpenDialog: (idToDelete: number) => void;
 };
 
-export const CategoryContainer: FunctionComponent<Props> = memo(
+export const CategoryNode: FunctionComponent<Props> = memo(
   ({
     category: { value, subCategories, id, editable, new: isNew },
     onCategoryChange,
@@ -59,7 +59,7 @@ export const CategoryContainer: FunctionComponent<Props> = memo(
     const generatedColor = useMemo(() => getReadableLightColor(), []);
 
     return (
-      <div className="category-container">
+      <div className="category-node">
         {isInner && (
           <>
             {categoryIndex === 0 && (
@@ -81,9 +81,9 @@ export const CategoryContainer: FunctionComponent<Props> = memo(
             )}
           </>
         )}
-        <div className="category-container_wrapper">
+        <div className="category-node_wrapper">
           <div
-            className="category-container_box"
+            className="category-node_box"
             id={`el-${id.toString()}`}
             style={{ background: editable ? "white" : boxColor }}
           >
@@ -91,7 +91,7 @@ export const CategoryContainer: FunctionComponent<Props> = memo(
               <InputText value={newValue} onChange={handleInputChange} />
             ) : (
               <span
-                className="category-container_value"
+                className="category-node_value"
                 onPointerDown={(event) => event.stopPropagation()}
               >
                 {value}
@@ -144,15 +144,15 @@ export const CategoryContainer: FunctionComponent<Props> = memo(
         </div>
 
         {!!subCategories.length && (
-          <div className="category-container_sub">
+          <div className="category-node_sub">
             <Line position="central" />
 
             {subCategories.map((subCategory, index) => (
-              <CategoryContainer
-                isInner
+              <CategoryNode
                 key={subCategory.id}
                 category={subCategory}
                 onCategoryChange={onCategoryChange}
+                isInner
                 categoryIndex={index}
                 boxColor={generatedColor}
                 innerCategories={subCategories}

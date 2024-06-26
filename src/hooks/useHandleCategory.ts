@@ -15,7 +15,7 @@ export const useHandleCategory = (
   const addCategory = () => {
     onCategoryChange(() => {
       const newCategory = {
-        id: Date.now(),
+        id: parseInt(Date.now().toString().split("").reverse().join("")),
         value: "",
         editable: true,
         subCategories: [],
@@ -46,7 +46,10 @@ export const useHandleCategory = (
 
   const confirmCategory = () => {
     onCategoryChange(() => {
-      handlerCategory.confirm(newValue ?? "", id);
+      handlerCategory.confirm(
+        newValue || `New_${Math.floor(Math.random() * 10000)}`,
+        id
+      );
 
       return id;
     });

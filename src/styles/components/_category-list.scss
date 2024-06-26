@@ -1,0 +1,61 @@
+.category-list {
+  font-family: "Roboto", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  &_box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0.5rem 1rem;
+    gap: 1rem;
+
+    cursor: pointer;
+
+    transition: background 500ms;
+
+    min-height: 50px;
+
+    border-bottom: 1px solid #e8e5e5;
+
+    & span {
+      max-width: 300px;
+    }
+
+    & svg {
+      max-width: 1.5rem;
+      max-height: 1.5rem;
+
+      transition: transform 200ms;
+    }
+
+    &:hover {
+      background: #e8e5e5;
+    }
+
+    &--open {
+      & svg {
+        transform: rotateX(180deg);
+      }
+    }
+  }
+
+  &_sub {
+    margin-left: 0.5rem;
+
+    transition: max-height 500ms;
+    max-height: 0vh;
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &--open {
+      max-height: 100vh;
+    }
+  }
+}

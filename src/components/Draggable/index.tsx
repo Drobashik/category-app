@@ -11,7 +11,7 @@ type Props = {
   onStartMove: (event: MouseEvent) => void;
   onMoving: (event: MouseEvent) => void;
   onStopMoving: (event: MouseEvent) => void;
-  onWheel: (event: WheelEvent) => void;
+  onZoom: (event: WheelEvent) => void;
 };
 
 export const Draggable: FunctionComponent<PropsWithChildren<Props>> = ({
@@ -21,7 +21,7 @@ export const Draggable: FunctionComponent<PropsWithChildren<Props>> = ({
   onStartMove,
   onMoving,
   onStopMoving,
-  onWheel,
+  onZoom,
 }) => {
   const positionStyle = {
     left: `${position.x}px`,
@@ -34,7 +34,7 @@ export const Draggable: FunctionComponent<PropsWithChildren<Props>> = ({
       onPointerLeave={onStopMoving}
       onPointerUp={onStopMoving}
       onPointerMove={onMoving}
-      onWheel={onWheel}
+      onWheel={onZoom}
     >
       <div
         className="draggable-item"
