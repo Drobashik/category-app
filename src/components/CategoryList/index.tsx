@@ -1,16 +1,21 @@
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent, MouseEvent, useEffect, useState } from "react";
 import { Category } from "../../types/Category.type";
 import classNames from "classnames";
-import { SVGArrowDown } from "../shared/SvgIcon/Icons";
+import { EyeSVG, SVGArrowDown } from "../shared/SvgIcon/Icons";
+import { isMobile } from "../../helpers";
 
 type Props = {
   category: Category;
-  className?: string;
+  onFocus: (id: number) => void;
+  onListClose: () => void;
+  globalCollapseKey: number;
 };
 
 export const CategoryList: FunctionComponent<Props> = ({
-  className,
   category,
+  onFocus,
+  globalCollapseKey,
+  onListClose,
 }) => {
   const [isOpen, setOpen] = useState(false);
 
@@ -20,18 +25,36 @@ export const CategoryList: FunctionComponent<Props> = ({
     setOpen((prev) => !prev);
   };
 
+  const handleFocus = (event: MouseEvent) => {
+    event.stopPropagation();
+
+    if (isMobile()) {
+      onListClose();
+    }
+
+    onFocus(category.id);
+  };
+
+  useEffect(() => {
+    setOpen(false);
+  }, [globalCollapseKey]);
+
   return (
-    <div className={className}>
+    <div className="category-list">
       <div
         className={classNames("category-list_box", {
           "category-list_box--open": isOpen,
         })}
         onClick={handleOpenList}
       >
-        <span>{category.value}</span>
-
         {/* TODO: Svg Icons needs to be rewritten to common svg component 
           and it should inherit all props of the element */}
+        <div>
+          <div className="category-list_eye" onClick={handleFocus}>
+            <EyeSVG />
+          </div>
+          <span>{category.value}</span>
+        </div>
         {!!category.subCategories.length && <SVGArrowDown />}
       </div>
       {!!category.subCategories.length && (
@@ -44,7 +67,9 @@ export const CategoryList: FunctionComponent<Props> = ({
             <CategoryList
               key={subCategory.id}
               category={subCategory}
-              className={className}
+              onFocus={onFocus}
+              onListClose={onListClose}
+              globalCollapseKey={globalCollapseKey}
             />
           ))}
         </ul>

@@ -1,3 +1,5 @@
+import { MOBILE_VIEW, SIDE_PANEL_SIZE } from "../constants";
+
 const getRandomLightColor = () => {
   const getColorValue = () => Math.floor(Math.random() * 156) + 150;
 
@@ -47,7 +49,7 @@ export const getReadableLightColor = () => {
  * @returns {number} - A random integer within the specified range.
  */
 export const getRandom = (
-  number: { min: number; max: number } | number,
+  number: { min: number; max: number } | number
 ): number => {
   if (typeof number === "number") {
     return Math.floor(Math.random() * number);
@@ -65,4 +67,19 @@ export const getRandom = (
  */
 export const getRandomId = (): number => {
   return parseInt(Date.now().toString().split("").reverse().join(""));
+};
+
+export const isMobile = () => {
+  return window.innerWidth < MOBILE_VIEW;
+};
+
+export const getAdjustedX = (
+  position: { x: number; y: number },
+  isListOpen: boolean
+) => {
+  return {
+    ...position,
+    x:
+      isListOpen && !isMobile() ? position.x + SIDE_PANEL_SIZE / 2 : position.x,
+  };
 };

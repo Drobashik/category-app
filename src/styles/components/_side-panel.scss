@@ -19,6 +19,10 @@ $panel-width: 330px;
   visibility: hidden;
   overflow: auto;
 
+  @media (max-width: 668px) {
+    min-width: 100%;
+  }
+
   &_content {
     padding: 0.5rem;
   }
