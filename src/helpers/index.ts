@@ -39,3 +39,30 @@ export const getReadableLightColor = () => {
 
   return color;
 };
+
+/**
+ * Generates a random integer within a specified range.
+ *
+ * @param {object | number} number
+ * @returns {number} - A random integer within the specified range.
+ */
+export const getRandom = (
+  number: { min: number; max: number } | number,
+): number => {
+  if (typeof number === "number") {
+    return Math.floor(Math.random() * number);
+  }
+
+  const { max, min } = number;
+
+  return Math.floor(Math.random() * (max - min) + min);
+};
+
+/**
+ * Generates random id that can be used for some specific elements or mapping
+ * @returns {number} - Generated id
+ *
+ */
+export const getRandomId = (): number => {
+  return parseInt(Date.now().toString().split("").reverse().join(""));
+};

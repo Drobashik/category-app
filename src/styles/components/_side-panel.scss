@@ -1,0 +1,31 @@
+$panel-width: 330px;
+
+.side-panel {
+  position: fixed;
+
+  top: 80px;
+  left: 0;
+
+  height: calc(100% - 80px);
+  min-width: $panel-width;
+
+  margin-left: -100%;
+
+  background-color: #fcfcfc;
+  z-index: 512;
+
+  transition: all 500ms;
+
+  visibility: hidden;
+  overflow: auto;
+
+  &_content {
+    padding: 0.5rem;
+  }
+
+  &--open {
+    margin-left: 0;
+    visibility: visible;
+    box-shadow: 0px 0px 10px #00000040;
+  }
+}

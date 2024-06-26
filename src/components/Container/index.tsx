@@ -6,13 +6,15 @@ import { useFocus } from "../../hooks/useFocus";
 import { categoryData } from "../../__mocks__/categoryData";
 
 import { HeadPanel } from "../HeadPanel";
-import { CategoryContainer } from "../CategoryContainer";
+import { CategoryNode } from "../CategoryNode";
 import { Draggable } from "../Draggable";
 
 import { Button } from "../shared/Button";
 import { CenterSVG } from "../shared/SvgIcon/Icons";
 import { Dialog } from "../shared/Dialog";
 import { useZoom } from "../../hooks/useZoom";
+import { CategoryList } from "../CategoryList";
+import { SidePanel } from "../SidePanel";
 
 export const Container = () => {
   const [category, setCategory] = useState(categoryData);
@@ -20,6 +22,8 @@ export const Container = () => {
   const [idToDelete, setIdToDelete] = useState(0);
 
   const [isOpen, setOpen] = useState(false);
+
+  const [isListOpen, setListOpen] = useState(false);
 
   const {
     position,
@@ -32,6 +36,8 @@ export const Container = () => {
 
   const { changeFocusedId } = useFocus(position, changePosition);
 
+  const { zoom, zoomChange } = useZoom(position, changePosition);
+
   const handleCategoryChange = useCallback(
     (action: () => number) => {
       const focusId = action();
@@ -40,25 +46,22 @@ export const Container = () => {
 
       setCategory({ ...categoryData });
     },
-    [category]
+    [category],
   );
 
   const { deleteCategory } = useHandleCategory(
     { id: idToDelete },
-    handleCategoryChange
+    handleCategoryChange,
   );
-
-  const { zoom, zoomChange } = useZoom(position, changePosition);
-
-  const handleDeleteConfirmation = () => {
-    deleteCategory();
-    setCategory({ ...categoryData });
-    setOpen(false);
-  };
 
   const handleOpenDialog = (idToDelete: number) => {
     setOpen(true);
     setIdToDelete(idToDelete);
+  };
+
+  const handleDeleteConfirmation = () => {
+    deleteCategory();
+    setOpen(false);
   };
 
   const handleCloseDialog = () => {
@@ -67,11 +70,17 @@ export const Container = () => {
 
   return (
     <div className="container">
+      <SidePanel isOpen={isListOpen}>
+        <CategoryList className="category-list" category={category} />
+      </SidePanel>
+
       <HeadPanel>
         <Button onClick={moveToScreenCenter}>
           <CenterSVG />
         </Button>
-        <Button variant="blue">List</Button>
+        <Button variant="blue" onClick={() => setListOpen((prev) => !prev)}>
+          List
+        </Button>
       </HeadPanel>
 
       <Draggable
@@ -80,9 +89,9 @@ export const Container = () => {
         onStartMove={startMove}
         onMoving={mouseMoving}
         onStopMoving={stopMove}
-        onWheel={zoomChange}
+        onZoom={zoomChange}
       >
-        <CategoryContainer
+        <CategoryNode
           category={category}
           onCategoryChange={handleCategoryChange}
           onOpenDialog={handleOpenDialog}

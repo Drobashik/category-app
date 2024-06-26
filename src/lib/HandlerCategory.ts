@@ -73,7 +73,7 @@ export class HandlerCategory {
   delete = (id: number) => {
     this.traverseCategories((node) => {
       const index = node.subCategories.findIndex(
-        (category) => category.id === id
+        (category) => category.id === id,
       );
 
       if (index !== -1) {
