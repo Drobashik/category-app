@@ -1,4 +1,4 @@
-import { MOBILE_VIEW, SIDE_PANEL_SIZE } from "../constants";
+import { MOBILE_VIEW } from "../constants";
 
 const getRandomLightColor = () => {
   const getColorValue = () => Math.floor(Math.random() * 156) + 150;
@@ -73,13 +73,14 @@ export const isMobile = () => {
   return window.innerWidth < MOBILE_VIEW;
 };
 
-export const getAdjustedX = (
+export const getModifiedPosition = (
   position: { x: number; y: number },
-  isListOpen: boolean
+  condition: boolean,
+  valueToModify: number,
 ) => {
   return {
     ...position,
     x:
-      isListOpen && !isMobile() ? position.x + SIDE_PANEL_SIZE / 2 : position.x,
+    condition ? position.x + valueToModify : position.x,
   };
 };

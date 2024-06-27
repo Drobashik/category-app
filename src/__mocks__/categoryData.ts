@@ -1,5 +1,5 @@
 export const categoryData = {
-  value: "Category",
+  value: "Main Category",
   editable: false,
   new: false,
   id: 1,

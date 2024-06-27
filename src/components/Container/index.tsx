@@ -1,11 +1,12 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { useMouseMove } from "../../hooks/useMouseMove";
 import { useHandleCategory } from "../../hooks/useHandleCategory";
 import { useFocus } from "../../hooks/useFocus";
 import { categoryData } from "../../__mocks__/categoryData";
 import { useZoom } from "../../hooks/useZoom";
-import { getAdjustedX } from "../../helpers";
+import { isMobile, getModifiedPosition } from "../../helpers";
+import { SIDE_PANEL_SIZE } from "../../constants";
 
 import { HeadPanel } from "../HeadPanel";
 import { CategoryNode } from "../CategoryNode";
@@ -18,22 +19,23 @@ import { CenterSVG } from "../shared/SvgIcon/Icons";
 import { Dialog } from "../shared/Dialog";
 
 export const Container = () => {
-  const [category, setCategory] = useState(categoryData);
-
-  const [idToDelete, setIdToDelete] = useState(0);
-
-  const [isOpen, setOpen] = useState(false);
+  const [isDialogOpen, setDialogOpen] = useState(false);
 
   const [isListOpen, setListOpen] = useState(false);
+
+  const isListOpenOnDesktop = isListOpen && !isMobile();
+
+  const [category, setCategory] = useState(categoryData);
 
   const handleCategoryChange = useCallback(
     (action: () => number) => {
       const focusId = action();
 
-      changeFocusedId(focusId);
+      changeFocus(focusId);
 
       setCategory({ ...categoryData });
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [category]
   );
 
@@ -48,17 +50,29 @@ export const Container = () => {
     stopMove,
   } = useMouseMove();
 
-  const { changeFocusedId } = useFocus(
-    getAdjustedX(position, isListOpen),
+  const { zoom, zoomChange } = useZoom(position, changePosition);
+
+  const { changeFocus } = useFocus(
+    getModifiedPosition(position, isListOpenOnDesktop, SIDE_PANEL_SIZE / 2),
     changePosition
   );
 
-  const { zoom, zoomChange } = useZoom(position, changePosition);
-
-  /* Side Panel List handling */
+  const handleMoveToCenterScreen = () => {
+    moveToScreenCenter(isListOpenOnDesktop ? SIDE_PANEL_SIZE / 2 : 0);
+  };
 
   const handleListOpen = () => {
-    setListOpen((prev) => !prev);
+    setListOpen((prev) => {
+      const newPrev = !prev;
+
+      if (isMobile()) return newPrev;
+
+      const panelOffset = SIDE_PANEL_SIZE / 2;
+      const modifierX = newPrev ? panelOffset : -panelOffset;
+      changePosition(position.x + modifierX, position.y);
+
+      return newPrev;
+    });
   };
 
   const handleListClose = () => {
@@ -67,23 +81,25 @@ export const Container = () => {
 
   /* Dialog handling */
 
-  const handleOpenDialog = (idToDelete: number) => {
-    setOpen(true);
-    setIdToDelete(idToDelete);
+  const idToDelete = useRef(0);
+
+  const handleOpenDialog = (id: number) => {
+    setDialogOpen(true);
+    idToDelete.current = id;
   };
 
   const { deleteCategory } = useHandleCategory(
-    { id: idToDelete },
+    { id: idToDelete.current },
     handleCategoryChange
   );
 
   const handleDeleteConfirmation = () => {
     deleteCategory();
-    setOpen(false);
+    setDialogOpen(false);
   };
 
   const handleCloseDialog = () => {
-    setOpen(false);
+    setDialogOpen(false);
   };
 
   return (
@@ -92,16 +108,16 @@ export const Container = () => {
         <CategoryListContainer
           category={category}
           onListClose={handleListClose}
-          onFocus={changeFocusedId}
+          onFocus={changeFocus}
         />
       </SidePanel>
 
       <HeadPanel>
-        <Button onClick={moveToScreenCenter}>
+        <Button onClick={handleMoveToCenterScreen}>
           <CenterSVG />
         </Button>
         <Button variant="blue" onClick={handleListOpen}>
-          List
+          List view
         </Button>
       </HeadPanel>
 
@@ -121,7 +137,7 @@ export const Container = () => {
       </Draggable>
 
       <Dialog
-        isOpen={isOpen}
+        isOpen={isDialogOpen}
         onClose={handleCloseDialog}
         title="Delete element"
       >
