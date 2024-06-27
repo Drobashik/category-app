@@ -14,7 +14,7 @@
     align-items: center;
 
     &:hover {
-      background-color: #d2d2d2;
+      background-color: #e8e5e5;
     }
 
     & svg {
@@ -78,7 +78,7 @@
       transition: transform 200ms;
     }
 
-    &:hover {
+    &:hover:not(:has(.category-list_eye:hover)) {
       background: #e8e5e5;
     }
 
