@@ -28,23 +28,23 @@ export const useCategory = (changeFocus?: (id: number) => void) => {
 
   const cancel = useCallback(
     (id: number) => changeCategory(() => handlerCategory.cancel(id)),
-    []
+    [category]
   );
 
   const edit = useCallback(
     (id: number) => changeCategory(() => handlerCategory.edit(id)),
-    []
+    [category]
   );
 
   const confirm = useCallback(
     (id: number, value = `Node_${getRandom(MAX_POSSIBLE_ID)}`) =>
       changeCategory(() => handlerCategory.confirm(id, value)),
-    []
+    [category]
   );
 
   const remove = useCallback(
     (id: number) => changeCategory(() => handlerCategory.delete(id)),
-    []
+    [category]
   );
 
   return {

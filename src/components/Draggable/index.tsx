@@ -12,9 +12,10 @@ export const Draggable: FunctionComponent<PropsWithChildren> = ({
 
   const { dragStart, dragging, dragStop } = useDragging();
 
-  const positionStyle = {
+  const draggableStyles = {
     left: `${elementPosition.x}px`,
     top: `${elementPosition.y}px`,
+    transform: `scale(${zoom})`,
   };
 
   return (
@@ -28,7 +29,7 @@ export const Draggable: FunctionComponent<PropsWithChildren> = ({
       <div
         className="draggable-item"
         onPointerDown={dragStart}
-        style={{ ...positionStyle, transform: `scale(${zoom})` }}
+        style={draggableStyles}
       >
         {children}
       </div>

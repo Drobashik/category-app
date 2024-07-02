@@ -23,7 +23,7 @@ type Props = {
   boxColor?: string;
   categoryIndex?: number;
   innerCategories?: Category[];
-  onOpenDialog: (idToDelete: number) => void;
+  onReceiveId: (id: number) => void;
   add: (id: number) => void;
   edit: (id: number) => void;
   remove: (id: number) => void;
@@ -38,7 +38,7 @@ export const CategoryNode: FunctionComponent<Props> = memo(
     boxColor = WHITE_COLOR,
     categoryIndex = 0,
     innerCategories = [],
-    onOpenDialog,
+    onReceiveId,
     ...restProps
   }) => {
     const { add, edit, remove, cancel, confirm } = restProps;
@@ -54,6 +54,11 @@ export const CategoryNode: FunctionComponent<Props> = memo(
     };
 
     const handleDelete = () => {
+      if (subCategories.length) {
+        onReceiveId(id);
+        return;
+      }
+
       remove(id);
     };
 
@@ -64,10 +69,6 @@ export const CategoryNode: FunctionComponent<Props> = memo(
     const handleCancel = () => {
       cancel(id);
       changeInputValue(value);
-    };
-
-    const handleOpenDialog = () => {
-      onOpenDialog(id);
     };
 
     const generatedColor = useMemo(() => getReadableLightColor(), []);
@@ -142,9 +143,7 @@ export const CategoryNode: FunctionComponent<Props> = memo(
                 <Button
                   buttonType="icon"
                   variant="error"
-                  onClick={
-                    subCategories.length ? handleOpenDialog : handleDelete
-                  }
+                  onClick={handleDelete}
                 >
                   <CrossSVG />
                 </Button>
@@ -167,7 +166,7 @@ export const CategoryNode: FunctionComponent<Props> = memo(
                 categoryIndex={index}
                 boxColor={generatedColor}
                 innerCategories={subCategories}
-                onOpenDialog={onOpenDialog}
+                onReceiveId={onReceiveId}
                 {...restProps}
               />
             ))}

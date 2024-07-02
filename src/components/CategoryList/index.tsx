@@ -8,14 +8,14 @@ type Props = {
   category: Category;
   globalCollapseKey: number;
   onFocus: (id: number) => void;
-  onListClose: () => void;
+  onPanelClose: () => void;
 };
 
 export const CategoryList: FunctionComponent<Props> = ({
   category,
   globalCollapseKey,
   onFocus,
-  onListClose,
+  onPanelClose,
 }) => {
   const [isOpen, setOpen] = useState(false);
 
@@ -29,7 +29,7 @@ export const CategoryList: FunctionComponent<Props> = ({
     event.stopPropagation();
 
     if (isMobile()) {
-      onListClose();
+      onPanelClose();
     }
 
     onFocus(category.id);
@@ -68,7 +68,7 @@ export const CategoryList: FunctionComponent<Props> = ({
               key={subCategory.id}
               category={subCategory}
               onFocus={onFocus}
-              onListClose={onListClose}
+              onPanelClose={onPanelClose}
               globalCollapseKey={globalCollapseKey}
             />
           ))}

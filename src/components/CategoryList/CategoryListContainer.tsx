@@ -9,7 +9,7 @@ type Props = {
   category: Category;
   findCategory: (value: string) => Category[];
   onFocus: (id: number) => void;
-  onListClose: () => void;
+  onPanelClose: () => void;
 };
 
 export const CategoryListContainer: FunctionComponent<Props> = memo(

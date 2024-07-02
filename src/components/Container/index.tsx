@@ -1,8 +1,8 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 
 import { useCategory } from "../../hooks/useCategory";
 import { useFocus } from "../../hooks/useFocus";
-import { useListPanel } from "../../hooks/useListPanel";
+import { useSidePanel } from "../../hooks/useSidePanel";
 
 import { isMobile } from "../../helpers";
 import { SIDE_PANEL_SIZE } from "../../constants";
@@ -16,12 +16,13 @@ import { CategoryListContainer } from "../CategoryList/CategoryListContainer";
 import { Button } from "../shared/Button";
 import { CenterSVG } from "../shared/SvgIcon/Icons";
 import { Dialog } from "../shared/Dialog";
+import { useDialog } from "../../hooks/useDialog";
 
 export const Container = () => {
-  const { isListOpen, handleListOpen, handleListClose } = useListPanel();
+  const { isPanelOpen, handlePanelOpen, handlePanelClose } = useSidePanel();
 
   const { changeFocus } = useFocus(
-    isListOpen && !isMobile(),
+    isPanelOpen && !isMobile(),
     SIDE_PANEL_SIZE / 2
   );
 
@@ -29,30 +30,26 @@ export const Container = () => {
 
   /* Dialog handing */
 
-  const [isDialogOpen, setDialogOpen] = useState(false);
+  const { isDialogOpen, openDialog, closeDialog } = useDialog();
 
-  const idToDelete = useRef(0);
+  const receivedId = useRef(0);
 
-  const handleOpenDialog = useCallback((id: number) => {
-    setDialogOpen(true);
-    idToDelete.current = id;
+  const handleReceiveId = useCallback((id: number) => {
+    openDialog();
+    receivedId.current = id;
   }, []);
 
-  const handleCloseDialog = () => {
-    setDialogOpen(false);
-  };
-
   const handleDeleteConfirmation = () => {
-    actions.remove(idToDelete.current);
-    setDialogOpen(false);
+    actions.remove(receivedId.current);
+    closeDialog();
   };
 
   return (
     <div className="container">
-      <SidePanel isOpen={isListOpen}>
+      <SidePanel isOpen={isPanelOpen}>
         <CategoryListContainer
           category={category}
-          onListClose={handleListClose}
+          onPanelClose={handlePanelClose}
           onFocus={changeFocus}
           findCategory={actions.find}
         />
@@ -62,7 +59,7 @@ export const Container = () => {
         <Button onClick={changeFocus.bind(null, category.id)}>
           <CenterSVG />
         </Button>
-        <Button variant="blue" onClick={handleListOpen}>
+        <Button variant="blue" onClick={handlePanelOpen}>
           List view
         </Button>
       </HeadPanel>
@@ -70,14 +67,14 @@ export const Container = () => {
       <Draggable>
         <CategoryNode
           category={category}
-          onOpenDialog={handleOpenDialog}
+          onReceiveId={handleReceiveId}
           {...actions}
         />
       </Draggable>
 
       <Dialog
         isOpen={isDialogOpen}
-        onClose={handleCloseDialog}
+        onClose={closeDialog}
         title="Delete element"
       >
         <div className="modal">
@@ -86,7 +83,7 @@ export const Container = () => {
             <p>All nested categories will be deleted too!</p>
           </div>
           <div className="modal_footer">
-            <Button variant="light" onClick={handleCloseDialog}>
+            <Button variant="light" onClick={closeDialog}>
               Cancel
             </Button>
             <Button variant="error" onClick={handleDeleteConfirmation}>
