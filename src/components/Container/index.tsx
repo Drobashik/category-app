@@ -1,11 +1,10 @@
 import { useCallback, useRef, useState } from "react";
 
-import { useMouseMove } from "../../hooks/useMouseMove";
-import { useHandleCategory } from "../../hooks/useHandleCategory";
+import { useCategory } from "../../hooks/useCategory";
 import { useFocus } from "../../hooks/useFocus";
-import { categoryData } from "../../__mocks__/categoryData";
-import { useZoom } from "../../hooks/useZoom";
-import { isMobile, getModifiedPosition } from "../../helpers";
+import { useListPanel } from "../../hooks/useListPanel";
+
+import { isMobile } from "../../helpers";
 import { SIDE_PANEL_SIZE } from "../../constants";
 
 import { HeadPanel } from "../HeadPanel";
@@ -19,86 +18,32 @@ import { CenterSVG } from "../shared/SvgIcon/Icons";
 import { Dialog } from "../shared/Dialog";
 
 export const Container = () => {
-  const [isDialogOpen, setDialogOpen] = useState(false);
-
-  const [isListOpen, setListOpen] = useState(false);
-
-  const isListOpenOnDesktop = isListOpen && !isMobile();
-
-  const [category, setCategory] = useState(categoryData);
-
-  const handleCategoryChange = useCallback(
-    (action: () => number) => {
-      const focusId = action();
-
-      changeFocus(focusId);
-
-      setCategory({ ...categoryData });
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [category]
-  );
-
-  /* Interaction hooks */
-
-  const {
-    position,
-    changePosition,
-    moveToScreenCenter,
-    startMove,
-    mouseMoving,
-    stopMove,
-  } = useMouseMove();
-
-  const { zoom, zoomChange } = useZoom(position, changePosition);
+  const { isListOpen, handleListOpen, handleListClose } = useListPanel();
 
   const { changeFocus } = useFocus(
-    getModifiedPosition(position, isListOpenOnDesktop, SIDE_PANEL_SIZE / 2),
-    changePosition
+    isListOpen && !isMobile(),
+    SIDE_PANEL_SIZE / 2
   );
 
-  const handleMoveToCenterScreen = () => {
-    moveToScreenCenter(isListOpenOnDesktop ? SIDE_PANEL_SIZE / 2 : 0);
-  };
+  const { category, ...actions } = useCategory(changeFocus);
 
-  const handleListOpen = () => {
-    setListOpen((prev) => {
-      const newPrev = !prev;
+  /* Dialog handing */
 
-      if (isMobile()) return newPrev;
-
-      const panelOffset = SIDE_PANEL_SIZE / 2;
-      const modifierX = newPrev ? panelOffset : -panelOffset;
-      changePosition(position.x + modifierX, position.y);
-
-      return newPrev;
-    });
-  };
-
-  const handleListClose = () => {
-    setListOpen(false);
-  };
-
-  /* Dialog handling */
+  const [isDialogOpen, setDialogOpen] = useState(false);
 
   const idToDelete = useRef(0);
 
-  const handleOpenDialog = (id: number) => {
+  const handleOpenDialog = useCallback((id: number) => {
     setDialogOpen(true);
     idToDelete.current = id;
-  };
+  }, []);
 
-  const { deleteCategory } = useHandleCategory(
-    { id: idToDelete.current },
-    handleCategoryChange
-  );
-
-  const handleDeleteConfirmation = () => {
-    deleteCategory();
+  const handleCloseDialog = () => {
     setDialogOpen(false);
   };
 
-  const handleCloseDialog = () => {
+  const handleDeleteConfirmation = () => {
+    actions.remove(idToDelete.current);
     setDialogOpen(false);
   };
 
@@ -109,11 +54,12 @@ export const Container = () => {
           category={category}
           onListClose={handleListClose}
           onFocus={changeFocus}
+          findCategory={actions.find}
         />
       </SidePanel>
 
       <HeadPanel>
-        <Button onClick={handleMoveToCenterScreen}>
+        <Button onClick={changeFocus.bind(null, category.id)}>
           <CenterSVG />
         </Button>
         <Button variant="blue" onClick={handleListOpen}>
@@ -121,18 +67,11 @@ export const Container = () => {
         </Button>
       </HeadPanel>
 
-      <Draggable
-        zoom={zoom}
-        position={position}
-        onStartMove={startMove}
-        onMoving={mouseMoving}
-        onStopMoving={stopMove}
-        onZoom={zoomChange}
-      >
+      <Draggable>
         <CategoryNode
           category={category}
-          onCategoryChange={handleCategoryChange}
           onOpenDialog={handleOpenDialog}
+          {...actions}
         />
       </Draggable>
 

@@ -1,44 +1,33 @@
-import {
-  FunctionComponent,
-  MouseEvent,
-  PropsWithChildren,
-  WheelEvent,
-} from "react";
+import { FunctionComponent, PropsWithChildren } from "react";
+import { usePositionContext } from "../../context/positionContext";
+import { useDragging } from "../../hooks/useDragging";
+import { useZoom } from "../../hooks/useZoom";
 
-type Props = {
-  zoom: number;
-  position: { x: number; y: number };
-  onStartMove: (event: MouseEvent) => void;
-  onMoving: (event: MouseEvent) => void;
-  onStopMoving: (event: MouseEvent) => void;
-  onZoom: (event: WheelEvent) => void;
-};
-
-export const Draggable: FunctionComponent<PropsWithChildren<Props>> = ({
+export const Draggable: FunctionComponent<PropsWithChildren> = ({
   children,
-  zoom,
-  position,
-  onStartMove,
-  onMoving,
-  onStopMoving,
-  onZoom,
 }) => {
+  const { elementPosition } = usePositionContext();
+
+  const { zoom, changeZoom } = useZoom();
+
+  const { dragStart, dragging, dragStop } = useDragging();
+
   const positionStyle = {
-    left: `${position.x}px`,
-    top: `${position.y}px`,
+    left: `${elementPosition.x}px`,
+    top: `${elementPosition.y}px`,
   };
 
   return (
     <div
       className="draggable-field"
-      onPointerLeave={onStopMoving}
-      onPointerUp={onStopMoving}
-      onPointerMove={onMoving}
-      onWheel={onZoom}
+      onPointerLeave={dragStop}
+      onPointerUp={dragStop}
+      onPointerMove={dragging}
+      onWheel={changeZoom}
     >
       <div
         className="draggable-item"
-        onPointerDown={onStartMove}
+        onPointerDown={dragStart}
         style={{ ...positionStyle, transform: `scale(${zoom})` }}
       >
         {children}

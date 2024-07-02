@@ -3,15 +3,15 @@ import { Category } from "../types/Category.type";
 export class HandlerCategory {
   constructor(private category: Category) {}
 
-  private traverseCategories = (change: (node: Category) => boolean) => {
+  private processCategoryTree = (change: (node: Category) => boolean) => {
     const stack = [this.category];
 
     while (stack.length > 0) {
       const node = stack.pop() as Category;
 
-      const success = change(node);
+      const isCyclingStopped = change(node);
 
-      if (success) {
+      if (isCyclingStopped) {
         break;
       }
 
@@ -22,7 +22,7 @@ export class HandlerCategory {
   };
 
   add = (newCategory: Category, id: number) => {
-    this.traverseCategories((node) => {
+    this.processCategoryTree((node) => {
       if (id === node.id) {
         node.subCategories.push(newCategory);
         return true;
@@ -30,10 +30,12 @@ export class HandlerCategory {
 
       return false;
     });
+
+    return newCategory.id;
   };
 
   edit = (id: number) => {
-    this.traverseCategories((node) => {
+    this.processCategoryTree((node) => {
       if (id === node.id) {
         node.editable = true;
 
@@ -42,10 +44,12 @@ export class HandlerCategory {
 
       return false;
     });
+
+    return id;
   };
 
   cancel = (id: number) => {
-    this.traverseCategories((node) => {
+    this.processCategoryTree((node) => {
       if (id === node.id) {
         node.editable = false;
 
@@ -54,12 +58,15 @@ export class HandlerCategory {
 
       return false;
     });
+
+    return id;
   };
 
-  confirm = (newValue: string, id: number) => {
-    this.traverseCategories((node) => {
+  confirm = (id: number, value: string) => {
+    console.log(value);
+    this.processCategoryTree((node) => {
       if (id === node.id) {
-        node.value = newValue;
+        node.value = value;
         node.editable = false;
         node.new = false;
 
@@ -68,12 +75,14 @@ export class HandlerCategory {
 
       return false;
     });
+
+    return id;
   };
 
   delete = (id: number) => {
-    this.traverseCategories((node) => {
+    this.processCategoryTree((node) => {
       const index = node.subCategories.findIndex(
-        (category) => category.id === id,
+        (category) => category.id === id
       );
 
       if (index !== -1) {
@@ -84,5 +93,21 @@ export class HandlerCategory {
 
       return false;
     });
+
+    return id;
+  };
+
+  find = (value: string) => {
+    const filteredCategories: Category[] = [];
+
+    this.processCategoryTree((node) => {
+      if (node.value.toLowerCase().includes(value.toLowerCase().trim())) {
+        filteredCategories.push(node);
+      }
+
+      return false;
+    });
+
+    return filteredCategories;
   };
 }

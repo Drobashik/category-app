@@ -32,7 +32,6 @@ export const Dialog: FunctionComponent<Props> = ({
           "dialog_backdrop--open": isOpen,
         })}
       />
-
       <dialog className="dialog" ref={dialogRef}>
         <div className="dialog_backdrop-click-area" onClick={onClose} />
 
