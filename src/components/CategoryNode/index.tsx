@@ -1,4 +1,4 @@
-import { ChangeEvent, FunctionComponent, memo, useMemo, useState } from "react";
+import { FunctionComponent, memo, useMemo } from "react";
 
 import { Line } from "../Line";
 
@@ -15,45 +15,59 @@ import { WHITE_COLOR } from "../../constants";
 
 import { getReadableLightColor } from "../../helpers";
 import { Category } from "../../types/Category.type";
-import { useHandleCategory } from "../../hooks/useHandleCategory";
+import { useInputText } from "../../hooks/useInputText";
 
 type Props = {
   category: Category;
-  onCategoryChange: (action: () => number) => void;
   isInner?: boolean;
   boxColor?: string;
   categoryIndex?: number;
   innerCategories?: Category[];
   onOpenDialog: (idToDelete: number) => void;
+  add: (id: number) => void;
+  edit: (id: number) => void;
+  remove: (id: number) => void;
+  confirm: (id: number, newValue?: string) => void;
+  cancel: (id: number) => void;
 };
 
 export const CategoryNode: FunctionComponent<Props> = memo(
   ({
     category: { value, subCategories, id, editable, new: isNew },
-    onCategoryChange,
     isInner = false,
     boxColor = WHITE_COLOR,
     categoryIndex = 0,
     innerCategories = [],
     onOpenDialog,
+    ...restProps
   }) => {
-    const [newValue, setNewValue] = useState(value);
+    const { add, edit, remove, cancel, confirm } = restProps;
 
-    const {
-      addCategory,
-      cancelCategory,
-      confirmCategory,
-      editCategory,
-      deleteCategory,
-    } = useHandleCategory({ id, newValue }, onCategoryChange);
+    const { inputValue, changeInputValue } = useInputText(value);
 
-    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-      setNewValue(event.target.value);
+    const handleAdd = () => {
+      add(id);
+    };
+
+    const handleEdit = () => {
+      edit(id);
+    };
+
+    const handleDelete = () => {
+      remove(id);
+    };
+
+    const handleConfirm = () => {
+      confirm(id, inputValue || undefined);
     };
 
     const handleCancel = () => {
-      cancelCategory();
-      setNewValue(value);
+      cancel(id);
+      changeInputValue(value);
+    };
+
+    const handleOpenDialog = () => {
+      onOpenDialog(id);
     };
 
     const generatedColor = useMemo(() => getReadableLightColor(), []);
@@ -88,7 +102,7 @@ export const CategoryNode: FunctionComponent<Props> = memo(
             style={{ background: editable ? "white" : boxColor }}
           >
             {editable ? (
-              <InputText value={newValue} onChange={handleInputChange} />
+              <InputText value={inputValue} onChange={changeInputValue} />
             ) : (
               <span
                 className="category-node_value"
@@ -104,24 +118,24 @@ export const CategoryNode: FunctionComponent<Props> = memo(
               <Button
                 buttonType="icon"
                 variant="success"
-                onClick={confirmCategory}
+                onClick={handleConfirm}
               >
                 <ConfirmSVG />
               </Button>
               <Button
                 buttonType="icon"
                 variant="error"
-                onClick={isNew ? deleteCategory : handleCancel}
+                onClick={isNew ? handleDelete : handleCancel}
               >
                 <CrossSVG />
               </Button>
             </>
           ) : (
             <>
-              <Button buttonType="icon" variant="greyed" onClick={addCategory}>
+              <Button buttonType="icon" variant="greyed" onClick={handleAdd}>
                 <PlusSVG />
               </Button>
-              <Button buttonType="icon" variant="info" onClick={editCategory}>
+              <Button buttonType="icon" variant="info" onClick={handleEdit}>
                 <EditSVG />
               </Button>
               {isInner && (
@@ -129,9 +143,7 @@ export const CategoryNode: FunctionComponent<Props> = memo(
                   buttonType="icon"
                   variant="error"
                   onClick={
-                    subCategories.length
-                      ? () => onOpenDialog(id)
-                      : deleteCategory
+                    subCategories.length ? handleOpenDialog : handleDelete
                   }
                 >
                   <CrossSVG />
@@ -150,18 +162,18 @@ export const CategoryNode: FunctionComponent<Props> = memo(
             {subCategories.map((subCategory, index) => (
               <CategoryNode
                 key={subCategory.id}
-                category={subCategory}
-                onCategoryChange={onCategoryChange}
                 isInner
+                category={subCategory}
                 categoryIndex={index}
                 boxColor={generatedColor}
                 innerCategories={subCategories}
                 onOpenDialog={onOpenDialog}
+                {...restProps}
               />
             ))}
           </div>
         )}
       </div>
     );
-  },
+  }
 );

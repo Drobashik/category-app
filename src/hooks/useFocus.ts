@@ -1,31 +1,40 @@
-import { useEffect, useState } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
+import { usePositionContext } from "../context/positionContext";
+import { getModifiedPosition } from "../helpers";
 
-export const useFocus = (
-  position: { x: number; y: number },
-  changePosition: (x: number, y: number) => void
-) => {
+export const useFocus = (conditionToModify = false, modifier = 0) => {
   const [focusedId, setFocusedId] = useState(0);
 
-  const changeFocus = (id: number) => {
+  const { elementPosition, changeElementPosition } = usePositionContext();
+
+  const changeFocus = useCallback((id: number) => {
     setFocusedId(id);
-  };
+  }, []);
 
-  useEffect(() => {
-    const element = document.getElementById(`el-${focusedId}`);
+  useLayoutEffect(() => {
+    const focusElement = document.getElementById(`el-${focusedId}`);
 
-    if (!element) return;
+    if (!focusElement) return;
 
-    const { x, y, width, height } = element.getBoundingClientRect();
+    const { x, y, width, height } = focusElement.getBoundingClientRect();
 
-    changePosition(
-      position.x + window.innerWidth / 2 - x - width / 2,
-      position.y + window.innerHeight / 2 - y - height / 2
+    const modifiedPositionX = getModifiedPosition(
+      "x",
+      elementPosition,
+      conditionToModify,
+      modifier
     );
 
-    (element.firstElementChild as HTMLInputElement).focus({
+    changeElementPosition(
+      modifiedPositionX + window.innerWidth / 2 - x - width / 2,
+      elementPosition.y + window.innerHeight / 2 - y - height / 2
+    );
+
+    focusElement.focus({
       preventScroll: true,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    setFocusedId(0);
   }, [focusedId]);
 
   return { changeFocus };

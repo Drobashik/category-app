@@ -1,16 +1,15 @@
 import { WheelEvent, useState } from "react";
 import { MAX_ZOOM, MIN_ZOOM, ZOOM_STEP } from "../constants";
+import { usePositionContext } from "../context/positionContext";
 
 let scrolled = true;
 
-export const useZoom = (
-  position: { x: number; y: number },
-  changePosition: (x: number, y: number) => void,
-  isRelativeToCursor = true,
-) => {
+export const useZoom = (isRelativeToCursor = true) => {
   const [zoom, setZoom] = useState(1);
 
-  const zoomChange = (event: WheelEvent) => {
+  const { elementPosition, changeElementPosition } = usePositionContext();
+
+  const changeZoom = (event: WheelEvent) => {
     if (scrolled) {
       const zoomDirection = Math.sign(event.deltaY * -1);
 
@@ -25,11 +24,11 @@ export const useZoom = (
 
       const scaleFactor = newZoom / zoom;
 
-      const newPosX = (position.x - relX) * scaleFactor + relX;
-      const newPosY = (position.y - relY) * scaleFactor + relY;
+      const newPosX = (elementPosition.x - relX) * scaleFactor + relX;
+      const newPosY = (elementPosition.y - relY) * scaleFactor + relY;
 
       setZoom(newZoom);
-      changePosition(newPosX, newPosY);
+      changeElementPosition(newPosX, newPosY);
 
       scrolled = false;
 
@@ -41,6 +40,6 @@ export const useZoom = (
 
   return {
     zoom,
-    zoomChange,
+    changeZoom,
   };
 };

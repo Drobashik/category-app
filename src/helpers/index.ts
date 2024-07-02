@@ -1,4 +1,5 @@
 import { MOBILE_VIEW } from "../constants";
+import { Position } from "../types/Position.type";
 
 const getRandomLightColor = () => {
   const getColorValue = () => Math.floor(Math.random() * 156) + 150;
@@ -74,13 +75,16 @@ export const isMobile = () => {
 };
 
 export const getModifiedPosition = (
-  position: { x: number; y: number },
+  dimension: "x" | "y",
+  position: Position,
   condition: boolean,
-  valueToModify: number,
-) => {
-  return {
-    ...position,
-    x:
-    condition ? position.x + valueToModify : position.x,
-  };
-};
+  valueToModify: number
+) => (condition ? position[dimension] + valueToModify : position[dimension]);
+
+export const getNewCategory = () => ({
+  id: getRandomId(),
+  value: "",
+  editable: true,
+  subCategories: [],
+  new: true,
+});

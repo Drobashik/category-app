@@ -5,7 +5,7 @@
   flex-direction: column;
   overflow: hidden;
 
-  &_eye {
+  &_focus {
     padding: 0.25rem;
 
     border-radius: 8px;
@@ -24,24 +24,39 @@
     }
   }
 
-  &_collapse {
-    padding: 0.25rem;
-    border-radius: 8px;
-    cursor: pointer;
+  &_control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 1rem;
 
     margin-bottom: 0.5rem;
 
-    display: inline-flex;
-    align-items: center;
-
     & svg {
-      width: 1.5rem;
-      height: 1.5rem;
-    }
+      border-radius: 8px;
+      cursor: pointer;
 
-    &:hover {
-      background-color: #e8e5e5;
+      max-width: 1.5rem;
+      max-height: 1.5rem;
+
+      transition: all 200ms;
+
+      &:hover {
+        fill: #9f9f9f;
+      }
     }
+  }
+
+  &_input {
+    border-radius: 4px;
+    font-family: "Roboto", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: white;
+    padding: 0.5rem;
+
+    text-align: start;
+
+    border: 1px solid #e8e5e5;
   }
 
   &_box {
@@ -60,7 +75,7 @@
 
     border-bottom: 1px solid #e8e5e5;
 
-    /* It is incorrect to do this, in the future need to be replaced */
+    /* It is incorrect to do this, in the future needs to be replaced */
     & > div {
       display: flex;
       gap: 1rem;
@@ -78,7 +93,7 @@
       transition: transform 200ms;
     }
 
-    &:hover:not(:has(.category-list_eye:hover)) {
+    &:hover:not(:has(.category-list_focus:hover)) {
       background: #e8e5e5;
     }
 

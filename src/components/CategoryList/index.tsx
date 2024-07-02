@@ -6,15 +6,15 @@ import { isMobile } from "../../helpers";
 
 type Props = {
   category: Category;
+  globalCollapseKey: number;
   onFocus: (id: number) => void;
   onListClose: () => void;
-  globalCollapseKey: number;
 };
 
 export const CategoryList: FunctionComponent<Props> = ({
   category,
-  onFocus,
   globalCollapseKey,
+  onFocus,
   onListClose,
 }) => {
   const [isOpen, setOpen] = useState(false);
@@ -50,7 +50,7 @@ export const CategoryList: FunctionComponent<Props> = ({
         {/* TODO: Svg Icons needs to be rewritten to common svg component 
           and it should inherit all props of the element */}
         <div>
-          <div className="category-list_eye" onClick={handleFocus}>
+          <div className="category-list_focus" onClick={handleFocus}>
             <EyeSVG />
           </div>
           <span>{category.value}</span>
