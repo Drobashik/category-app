@@ -1,11 +1,11 @@
-import { useCallback, useRef } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 
 import { useCategory } from "../../hooks/useCategory";
 import { useFocus } from "../../hooks/useFocus";
 import { useSidePanel } from "../../hooks/useSidePanel";
 
 import { isMobile } from "../../helpers";
-import { SIDE_PANEL_SIZE } from "../../constants";
+import { SIDE_PANEL_SIZE, zoomOptions } from "../../constants";
 
 import { HeadPanel } from "../HeadPanel";
 import { CategoryNode } from "../CategoryNode";
@@ -17,6 +17,8 @@ import { Button } from "../shared/Button";
 import { CenterSVG } from "../shared/SvgIcon/Icons";
 import { Dialog } from "../shared/Dialog";
 import { useDialog } from "../../hooks/useDialog";
+import { Select } from "../shared/Select";
+import { useZoom } from "../../hooks/useZoom";
 
 export const Container = () => {
   const { isPanelOpen, handlePanelOpen, handlePanelClose } = useSidePanel();
@@ -26,15 +28,27 @@ export const Container = () => {
     SIDE_PANEL_SIZE / 2
   );
 
+  const moveToCenter = () => {
+    changeFocus(category.id);
+  };
+
   const { category, ...actions } = useCategory(changeFocus);
 
-  /* Dialog handing */
+  const [selectValue, setSelectValue] = useState(100);
+
+  const { zoom, zoomIn, zoomOut, changeZoom, changeWheelZoom } = useZoom();
+
+  const handleSelectZoomChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const zoomValue = +event.target.value / 100; // Here 100 is converter to the scale units
+
+    changeZoom(zoomValue);
+  };
 
   const { isDialogOpen, openDialog, closeDialog } = useDialog();
 
   const receivedId = useRef(0);
 
-  const handleReceiveId = useCallback((id: number) => {
+  const handleDeleteModal = useCallback((id: number) => {
     openDialog();
     receivedId.current = id;
   }, []);
@@ -43,6 +57,17 @@ export const Container = () => {
     actions.remove(receivedId.current);
     closeDialog();
   };
+
+  useEffect(() => {
+    const correctOption = zoomOptions.find((option) => {
+      const diff = Math.round(zoom * 100) - option.value;
+      if (diff < 25 && diff > -25) {
+        return option;
+      }
+    });
+
+    setSelectValue(correctOption?.value ?? 0);
+  }, [zoom]);
 
   return (
     <div className="container">
@@ -56,7 +81,14 @@ export const Container = () => {
       </SidePanel>
 
       <HeadPanel>
-        <Button onClick={changeFocus.bind(null, category.id)}>
+        <Button onClick={zoomIn}>+</Button>
+        <Select
+          value={selectValue}
+          onChange={handleSelectZoomChange}
+          options={zoomOptions}
+        />
+        <Button onClick={zoomOut}>-</Button>
+        <Button onClick={moveToCenter}>
           <CenterSVG />
         </Button>
         <Button variant="blue" onClick={handlePanelOpen}>
@@ -64,10 +96,10 @@ export const Container = () => {
         </Button>
       </HeadPanel>
 
-      <Draggable>
+      <Draggable zoom={zoom} onZoomWheel={changeWheelZoom}>
         <CategoryNode
           category={category}
-          onReceiveId={handleReceiveId}
+          onOpenModal={handleDeleteModal}
           {...actions}
         />
       </Draggable>

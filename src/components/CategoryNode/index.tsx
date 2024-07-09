@@ -23,7 +23,7 @@ type Props = {
   boxColor?: string;
   categoryIndex?: number;
   innerCategories?: Category[];
-  onReceiveId: (id: number) => void;
+  onOpenModal: (id: number) => void;
   add: (id: number) => void;
   edit: (id: number) => void;
   remove: (id: number) => void;
@@ -38,7 +38,7 @@ export const CategoryNode: FunctionComponent<Props> = memo(
     boxColor = WHITE_COLOR,
     categoryIndex = 0,
     innerCategories = [],
-    onReceiveId,
+    onOpenModal,
     ...restProps
   }) => {
     const { add, edit, remove, cancel, confirm } = restProps;
@@ -55,7 +55,7 @@ export const CategoryNode: FunctionComponent<Props> = memo(
 
     const handleDelete = () => {
       if (subCategories.length) {
-        onReceiveId(id);
+        onOpenModal(id);
         return;
       }
 
@@ -166,7 +166,7 @@ export const CategoryNode: FunctionComponent<Props> = memo(
                 categoryIndex={index}
                 boxColor={generatedColor}
                 innerCategories={subCategories}
-                onReceiveId={onReceiveId}
+                onOpenModal={onOpenModal}
                 {...restProps}
               />
             ))}
