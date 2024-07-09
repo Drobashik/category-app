@@ -1,6 +1,7 @@
 import { useCallback, useLayoutEffect, useState } from "react";
 import { usePositionContext } from "../context/positionContext";
-import { getModifiedPosition } from "../helpers";
+import { getModifiedPosition, setupTransitionAnimation } from "../helpers";
+import { DRAGGABLE_ITEM_ID } from "../constants";
 
 export const useFocus = (conditionToModify = false, modifier = 0) => {
   const [focusedId, setFocusedId] = useState(0);
@@ -24,6 +25,8 @@ export const useFocus = (conditionToModify = false, modifier = 0) => {
       conditionToModify,
       modifier
     );
+
+    setupTransitionAnimation(DRAGGABLE_ITEM_ID, 500);
 
     changeElementPosition(
       modifiedPositionX + window.innerWidth / 2 - x - width / 2,

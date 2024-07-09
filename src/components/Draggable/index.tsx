@@ -1,20 +1,26 @@
-import { FunctionComponent, PropsWithChildren } from "react";
+import { FunctionComponent, PropsWithChildren, WheelEvent } from "react";
 import { usePositionContext } from "../../context/positionContext";
 import { useDragging } from "../../hooks/useDragging";
-import { useZoom } from "../../hooks/useZoom";
+import { DRAGGABLE_ITEM_ID } from "../../constants";
 
-export const Draggable: FunctionComponent<PropsWithChildren> = ({
+type Props = {
+  zoom: number;
+  onZoomWheel: (event: WheelEvent) => void;
+};
+
+export const Draggable: FunctionComponent<PropsWithChildren<Props>> = ({
   children,
+  zoom,
+  onZoomWheel,
 }) => {
   const { elementPosition } = usePositionContext();
 
-  const { zoom, changeZoom } = useZoom();
-
   const { dragStart, dragging, dragStop } = useDragging();
 
-  const positionStyle = {
+  const draggableStyles = {
     left: `${elementPosition.x}px`,
     top: `${elementPosition.y}px`,
+    scale: `${zoom}`,
   };
 
   return (
@@ -23,12 +29,13 @@ export const Draggable: FunctionComponent<PropsWithChildren> = ({
       onPointerLeave={dragStop}
       onPointerUp={dragStop}
       onPointerMove={dragging}
-      onWheel={changeZoom}
+      onWheel={onZoomWheel}
     >
       <div
         className="draggable-item"
+        id={DRAGGABLE_ITEM_ID}
         onPointerDown={dragStart}
-        style={{ ...positionStyle, transform: `scale(${zoom})` }}
+        style={draggableStyles}
       >
         {children}
       </div>

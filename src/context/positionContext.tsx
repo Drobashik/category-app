@@ -1,6 +1,8 @@
 import {
+  Dispatch,
   FunctionComponent,
   PropsWithChildren,
+  SetStateAction,
   createContext,
   useCallback,
   useContext,
@@ -10,11 +12,18 @@ import { Position } from "../types/Position.type";
 
 type PositionContextType = {
   elementPosition: Position;
+  setElementPosition: Dispatch<
+    SetStateAction<{
+      x: number;
+      y: number;
+    }>
+  >;
   changeElementPosition: (x: number, y: number) => void;
 };
 
 const defaultValue = {
   elementPosition: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+  setElementPosition: () => {},
   changeElementPosition: () => {},
 };
 
@@ -35,6 +44,7 @@ export const PositionProvider: FunctionComponent<PropsWithChildren> = ({
     <PositionContext.Provider
       value={{
         elementPosition,
+        setElementPosition,
         changeElementPosition,
       }}
     >

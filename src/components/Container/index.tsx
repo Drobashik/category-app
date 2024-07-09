@@ -1,11 +1,11 @@
-import { useCallback, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 
 import { useCategory } from "../../hooks/useCategory";
 import { useFocus } from "../../hooks/useFocus";
-import { useListPanel } from "../../hooks/useListPanel";
+import { useSidePanel } from "../../hooks/useSidePanel";
 
 import { isMobile } from "../../helpers";
-import { SIDE_PANEL_SIZE } from "../../constants";
+import { SIDE_PANEL_SIZE, zoomOptions } from "../../constants";
 
 import { HeadPanel } from "../HeadPanel";
 import { CategoryNode } from "../CategoryNode";
@@ -16,68 +16,97 @@ import { CategoryListContainer } from "../CategoryList/CategoryListContainer";
 import { Button } from "../shared/Button";
 import { CenterSVG } from "../shared/SvgIcon/Icons";
 import { Dialog } from "../shared/Dialog";
+import { useDialog } from "../../hooks/useDialog";
+import { Select } from "../shared/Select";
+import { useZoom } from "../../hooks/useZoom";
 
 export const Container = () => {
-  const { isListOpen, handleListOpen, handleListClose } = useListPanel();
+  const { isPanelOpen, handlePanelOpen, handlePanelClose } = useSidePanel();
 
   const { changeFocus } = useFocus(
-    isListOpen && !isMobile(),
+    isPanelOpen && !isMobile(),
     SIDE_PANEL_SIZE / 2
   );
 
+  const moveToCenter = () => {
+    changeFocus(category.id);
+  };
+
   const { category, ...actions } = useCategory(changeFocus);
 
-  /* Dialog handing */
+  const [selectValue, setSelectValue] = useState(100);
 
-  const [isDialogOpen, setDialogOpen] = useState(false);
+  const { zoom, zoomIn, zoomOut, changeZoom, changeWheelZoom } = useZoom();
 
-  const idToDelete = useRef(0);
+  const handleSelectZoomChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const zoomValue = +event.target.value / 100; // Here 100 is converter to the scale units
 
-  const handleOpenDialog = useCallback((id: number) => {
-    setDialogOpen(true);
-    idToDelete.current = id;
+    changeZoom(zoomValue);
+  };
+
+  const { isDialogOpen, openDialog, closeDialog } = useDialog();
+
+  const receivedId = useRef(0);
+
+  const handleDeleteModal = useCallback((id: number) => {
+    openDialog();
+    receivedId.current = id;
   }, []);
 
-  const handleCloseDialog = () => {
-    setDialogOpen(false);
+  const handleDeleteConfirmation = () => {
+    actions.remove(receivedId.current);
+    closeDialog();
   };
 
-  const handleDeleteConfirmation = () => {
-    actions.remove(idToDelete.current);
-    setDialogOpen(false);
-  };
+  useEffect(() => {
+    const correctOption = zoomOptions.find((option) => {
+      const diff = Math.round(zoom * 100) - option.value;
+      if (diff < 25 && diff > -25) {
+        return option;
+      }
+    });
+
+    setSelectValue(correctOption?.value ?? 0);
+  }, [zoom]);
 
   return (
     <div className="container">
-      <SidePanel isOpen={isListOpen}>
+      <SidePanel isOpen={isPanelOpen}>
         <CategoryListContainer
           category={category}
-          onListClose={handleListClose}
+          onPanelClose={handlePanelClose}
           onFocus={changeFocus}
           findCategory={actions.find}
         />
       </SidePanel>
 
       <HeadPanel>
-        <Button onClick={changeFocus.bind(null, category.id)}>
+        <Button onClick={zoomIn}>+</Button>
+        <Select
+          value={selectValue}
+          onChange={handleSelectZoomChange}
+          options={zoomOptions}
+        />
+        <Button onClick={zoomOut}>-</Button>
+        <Button onClick={moveToCenter}>
           <CenterSVG />
         </Button>
-        <Button variant="blue" onClick={handleListOpen}>
+        <Button variant="blue" onClick={handlePanelOpen}>
           List view
         </Button>
       </HeadPanel>
 
-      <Draggable>
+      <Draggable zoom={zoom} onZoomWheel={changeWheelZoom}>
         <CategoryNode
           category={category}
-          onOpenDialog={handleOpenDialog}
+          onOpenModal={handleDeleteModal}
           {...actions}
         />
       </Draggable>
 
       <Dialog
         isOpen={isDialogOpen}
-        onClose={handleCloseDialog}
+        onClose={closeDialog}
         title="Delete element"
       >
         <div className="modal">
@@ -86,7 +115,7 @@ export const Container = () => {
             <p>All nested categories will be deleted too!</p>
           </div>
           <div className="modal_footer">
-            <Button variant="light" onClick={handleCloseDialog}>
+            <Button variant="light" onClick={closeDialog}>
               Cancel
             </Button>
             <Button variant="error" onClick={handleDeleteConfirmation}>

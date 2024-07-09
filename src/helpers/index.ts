@@ -88,3 +88,12 @@ export const getNewCategory = () => ({
   subCategories: [],
   new: true,
 });
+
+export const setupTransitionAnimation = (elementId: string, delay: number) => {
+  const element = document.getElementById(elementId) as HTMLElement;
+  element.style.transition = `left ${delay}ms, top ${delay}ms`;
+
+  setTimeout(() => {
+    element.style.transition = "none";
+  }, delay);
+};
